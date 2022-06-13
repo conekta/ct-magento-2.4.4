@@ -3,7 +3,7 @@
     <preference for="Conekta\Payments\Api\Data\ConektaSalesOrderInterface" type="Conekta\Payments\Model\ConektaSalesOrder"/>
     <preference for="Conekta\Payments\Api\Data\ConektaQuoteInterface" type="Conekta\Payments\Model\ConektaQuote"/>
     <preference for="Conekta\Payments\Api\EmbedFormRepositoryInterface" type="Conekta\Payments\Model\EmbedFormRepository"/>
-    
+
     <type name="Magento\Checkout\Model\CompositeConfigProvider">
         <arguments>
             <argument name="configProviders" xsi:type="array">
@@ -33,7 +33,7 @@
     <!-- Payment Method Facade configuration -->
     <virtualType name="ConektaPaymentsEmbedFormFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
-            <argument name="code" xsi:type="const">\Conekta\Payments\Model\Ui\EmbedForm\ConfigProvider::CODE</argument>
+            <argument name="code" xsi:type="const">Conekta\Payments\Model\Ui\EmbedForm\ConfigProvider::CODE</argument>
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
             <argument name="infoBlockType" xsi:type="string">Conekta\Payments\Block\EmbedForm\EmbedFormInfo</argument>
             <argument name="valueHandlerPool" xsi:type="object">ConektaPaymentsEmbedFormValueHandlerPool</argument>
@@ -44,7 +44,7 @@
     <!-- Configuration reader -->
     <virtualType name="ConektaPaymentsEmbedFormConfig" type="Magento\Payment\Gateway\Config\Config">
         <arguments>
-            <argument name="methodCode" xsi:type="const">\Conekta\Payments\Model\Ui\EmbedForm\ConfigProvider::CODE</argument>
+            <argument name="methodCode" xsi:type="const">Conekta\Payments\Model\Ui\EmbedForm\ConfigProvider::CODE</argument>
         </arguments>
     </virtualType>
 
@@ -100,7 +100,7 @@
     </virtualType>
 
     <!-- Value handlers infrastructure -->
-    
+
     <virtualType name="ConektaPaymentsEmbedFormValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
         <arguments>
             <argument name="handlers" xsi:type="array">
@@ -115,7 +115,7 @@
             <argument name="configInterface" xsi:type="object">ConektaPaymentsEmbedFormConfig</argument>
         </arguments>
     </virtualType>
-    
+
     <type name="Conekta\Payments\Block\EmbedForm\EmbedFormInfo">
         <arguments>
             <argument name="config" xsi:type="object">ConektaPaymentsEmbedFormConfig</argument>
@@ -138,7 +138,7 @@
     <!-- Configuration reader -->
     <virtualType name="ConektaPaymentsCreditCardConfig" type="Magento\Payment\Gateway\Config\Config">
         <arguments>
-            <argument name="methodCode" xsi:type="const">\Conekta\Payments\Model\Ui\CreditCard\ConfigProvider::CODE</argument>
+            <argument name="methodCode" xsi:type="const">Conekta\Payments\Model\Ui\CreditCard\ConfigProvider::CODE</argument>
         </arguments>
     </virtualType>
 
@@ -267,7 +267,7 @@
     <!-- Payment Method Facade configuration -->
     <virtualType name="ConektaPaymentsOxxoFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
-            <argument name="code" xsi:type="const">\Conekta\Payments\Model\Ui\Oxxo\ConfigProvider::CODE</argument>
+            <argument name="code" xsi:type="const">Conekta\Payments\Model\Ui\Oxxo\ConfigProvider::CODE</argument>
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
             <argument name="infoBlockType" xsi:type="string">Conekta\Payments\Block\Oxxo\OxxoInfo</argument>
             <argument name="valueHandlerPool" xsi:type="object">ConektaPaymentsOxxoValueHandlerPool</argument>
@@ -278,7 +278,7 @@
     <!-- Configuration reader -->
     <virtualType name="ConektaPaymentsOxxoConfig" type="Magento\Payment\Gateway\Config\Config">
         <arguments>
-            <argument name="methodCode" xsi:type="const">\Conekta\Payments\Model\Ui\Oxxo\ConfigProvider::CODE</argument>
+            <argument name="methodCode" xsi:type="const">Conekta\Payments\Model\Ui\Oxxo\ConfigProvider::CODE</argument>
         </arguments>
     </virtualType>
 
@@ -371,7 +371,7 @@
     <!-- Payment Method Facade configuration -->
     <virtualType name="ConektaPaymentsSpeiFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
-            <argument name="code" xsi:type="const">\Conekta\Payments\Model\Ui\Spei\ConfigProvider::CODE</argument>
+            <argument name="code" xsi:type="const">Conekta\Payments\Model\Ui\Spei\ConfigProvider::CODE</argument>
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
             <argument name="infoBlockType" xsi:type="string">Conekta\Payments\Block\Spei\SpeiInfo</argument>
             <argument name="valueHandlerPool" xsi:type="object">ConektaPaymentsSpeiValueHandlerPool</argument>
@@ -382,7 +382,7 @@
     <!-- Configuration reader -->
     <virtualType name="ConektaPaymentsSpeiConfig" type="Magento\Payment\Gateway\Config\Config">
         <arguments>
-            <argument name="methodCode" xsi:type="const">\Conekta\Payments\Model\Ui\Spei\ConfigProvider::CODE</argument>
+            <argument name="methodCode" xsi:type="const">Conekta\Payments\Model\Ui\Spei\ConfigProvider::CODE</argument>
         </arguments>
     </virtualType>
 

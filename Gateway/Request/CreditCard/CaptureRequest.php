@@ -1,39 +1,39 @@
 <?php
+
 namespace Conekta\Payments\Gateway\Request\CreditCard;
 
 use Conekta\Payments\Helper\Data as ConektaHelper;
 use Conekta\Payments\Logger\Logger as ConektaLogger;
+use Magento\Framework\Validator\Exception;
 use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
 class CaptureRequest implements BuilderInterface
 {
-    private $config;
-
-    private $subjectReader;
-
-    protected $_conektaHelper;
-
-    private $_conektaLogger;
-
+    /**
+     * @param ConfigInterface $config
+     * @param SubjectReader $subjectReader
+     * @param ConektaHelper $conektaHelper
+     * @param ConektaLogger $conektaLogger
+     */
     public function __construct(
-        ConfigInterface $config,
-        SubjectReader $subjectReader,
-        ConektaHelper $conektaHelper,
-        ConektaLogger $conektaLogger
+        private ConfigInterface $config,
+        private SubjectReader $subjectReader,
+        protected ConektaHelper $conektaHelper,
+        private ConektaLogger $conektaLogger
     ) {
-        $this->_conektaHelper = $conektaHelper;
-        $this->_conektaLogger = $conektaLogger;
-        $this->_conektaLogger->info('Request CaptureRequest :: __construct');
-
-        $this->config = $config;
-        $this->subjectReader = $subjectReader;
+        $this->conektaLogger->info('Request CaptureRequest :: __construct');
     }
 
-    public function build(array $buildSubject)
+    /**
+     * @param array $buildSubject
+     * @return array
+     * @throws Exception
+     */
+    public function build(array $buildSubject): array
     {
-        $this->_conektaLogger->info('Request CaptureRequest :: build');
+        $this->conektaLogger->info('Request CaptureRequest :: build');
 
         $paymentDO = $this->subjectReader->readPayment($buildSubject);
         $payment = $paymentDO->getPayment();
@@ -42,7 +42,7 @@ class CaptureRequest implements BuilderInterface
         $token = $payment->getAdditionalInformation('card_token');
         $installments = $payment->getAdditionalInformation('monthly_installments');
 
-        $amount = $this->_conektaHelper->convertToApiPrice($order->getGrandTotalAmount());
+        $amount = $this->conektaHelper->convertToApiPrice($order->getGrandTotalAmount());
 
         $request = [];
         try {
@@ -51,18 +51,18 @@ class CaptureRequest implements BuilderInterface
                 $token
             );
             $request['metadata'] = [
-                'plugin' => 'Magento',
-                'plugin_version' => $this->_conektaHelper->getMageVersion(),
-                'plugin_conekta_version' => $this->_conektaHelper->pluginVersion(),
-                'order_id'       => $order->getOrderIncrementId(),
-                'soft_validations'  => 'true'
+                'plugin'                 => 'Magento',
+                'plugin_version'         => $this->conektaHelper->getMageVersion(),
+                'plugin_conekta_version' => $this->conektaHelper->pluginVersion(),
+                'order_id'               => $order->getOrderIncrementId(),
+                'soft_validations'       => 'true'
             ];
             if ($this->_validateMonthlyInstallments($amount, $installments)) {
                 $request['payment_method_details']['payment_method']['monthly_installments'] = $installments;
             }
         } catch (\Exception $e) {
-            $this->_conektaLogger->info('Request CaptureRequest :: build Problem', $e->getMessage());
-            throw new \Magento\Framework\Validator\Exception(__('Problem Creating Charge'));
+            $this->conektaLogger->info('Request CaptureRequest :: build Problem', $e->getMessage());
+            throw new Exception(__('Problem Creating Charge'));
         }
 
         $request['CURRENCY'] = $order->getCurrencyCode();
@@ -70,32 +70,40 @@ class CaptureRequest implements BuilderInterface
         $request['INVOICE'] = $order->getOrderIncrementId();
         $request['AMOUNT'] = number_format($order->getGrandTotalAmount(), 2);
 
-        $this->_conektaLogger->info('Request CaptureRequest :: build : return request', $request);
+        $this->conektaLogger->info('Request CaptureRequest :: build : return request', $request);
 
         return $request;
     }
 
-    public function getChargeCard($amount, $tokenId)
+    /**
+     * @param $amount
+     * @param $tokenId
+     * @return array
+     */
+    public function getChargeCard($amount, $tokenId): array
     {
-        $charge = [
+        return [
             'payment_method' => [
                 'type'     => 'card',
                 'token_id' => $tokenId
             ],
             'amount' => $amount
         ];
-
-        return $charge;
     }
 
-    private function _validateMonthlyInstallments($amount, $installments)
+    /**
+     * @param $amount
+     * @param $installments
+     * @return bool
+     */
+    private function _validateMonthlyInstallments($amount, $installments): bool
     {
-        $active_monthly_installments = $this->_conektaHelper->getConfigData(
+        $active_monthly_installments = $this->conektaHelper->getConfigData(
             'conekta/conekta_creditcard',
             'active_monthly_installments'
         );
         if ($active_monthly_installments) {
-            $minimum_amount_monthly_installments = $this->_conektaHelper->getConfigData(
+            $minimum_amount_monthly_installments = $this->conektaHelper->getConfigData(
                 'conekta/conekta_creditcard',
                 'minimum_amount_monthly_installments'
             );

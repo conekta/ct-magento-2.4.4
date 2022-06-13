@@ -1,15 +1,20 @@
 <?php
+
 namespace Conekta\Payments\Api;
 
+use Conekta\Order;
+
+/**
+ * Interface EmbedFormRepositoryInterface
+ * @package Conekta\Payments\Api
+ */
 interface EmbedFormRepositoryInterface
 {
-    
     /**
      * @param int $quoteId
-     * @param [] $orderParams
+     * @param array $orderParams
      * @param float $orderTotal
-     * @return \Conekta\Order
-     * @throws ConektaException
+     * @return Order
      */
-    public function generate($quoteId, $orderParams, $orderTotal);
+    public function generate(int $quoteId, array $orderParams, float $orderTotal): Order;
 }

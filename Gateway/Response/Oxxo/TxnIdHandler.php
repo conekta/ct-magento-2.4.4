@@ -1,35 +1,26 @@
 <?php
+
 namespace Conekta\Payments\Gateway\Response\Oxxo;
 
 use Conekta\Payments\Logger\Logger as ConektaLogger;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
-use Magento\Sales\Model\Order;
 
 class TxnIdHandler implements HandlerInterface
 {
-    const TXN_ID = 'TXN_ID';
-    const ORD_ID = 'ORD_ID';
-
-    private $_conektaLogger;
-
-    private $subjectReader;
+    public const TXN_ID = 'TXN_ID';
+    public const ORD_ID = 'ORD_ID';
 
     /**
      * TxnIdHandler constructor.
      * @param ConektaLogger $conektaLogger
      * @param SubjectReader $subjectReader
-     * @param \Magento\Sales\Model\Service\InvoiceService $invoiceService
-     * @param \Magento\Framework\DB\TransactionFactory $transactionFactory
      */
     public function __construct(
-        ConektaLogger $conektaLogger,
-        SubjectReader $subjectReader
+        private ConektaLogger $conektaLogger,
+        private SubjectReader $subjectReader
     ) {
-        $this->_conektaLogger = $conektaLogger;
-        $this->_conektaLogger->info('Response Oxxo TxnIdHandler :: __construct');
-
-        $this->subjectReader = $subjectReader;
+        $this->conektaLogger->info('Response Oxxo TxnIdHandler :: __construct');
     }
 
     /**
@@ -39,19 +30,18 @@ class TxnIdHandler implements HandlerInterface
      * @param array $response
      * @return void
      */
-    public function handle(array $handlingSubject, array $response)
+    public function handle(array $handlingSubject, array $response): void
     {
-        $this->_conektaLogger->info('Response Oxxo TxnIdHandler :: handle');
+        $this->conektaLogger->info('Response Oxxo TxnIdHandler :: handle');
 
         $paymentDO = $this->subjectReader->readPayment($handlingSubject);
         $payment = $paymentDO->getPayment();
+
         $order = $payment->getOrder();
+        $order->setExtOrderId($response[self::ORD_ID]);
 
         $payment->setTransactionId($response[self::TXN_ID]);
         $payment->setAdditionalInformation('offline_info', $response['offline_info']);
-
-        $order->setExtOrderId($response[self::ORD_ID]);
-
         $payment->setIsTransactionPending(true);
         $payment->setIsTransactionClosed(false);
         $payment->setShouldCloseParentTransaction(false);

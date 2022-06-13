@@ -1,42 +1,43 @@
 <?php
-declare(strict_types=1);
 
 namespace Conekta\Payments\Model\System\Config\Source;
 
+use Magento\Eav\Api\AttributeRepositoryInterface;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Option\ArrayInterface;
 
 class MetadataProduct implements ArrayInterface
 {
     /**
-     * @var \Magento\Framework\Api\SearchCriteriaBuilder
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param AttributeRepositoryInterface $attributeRepository
      */
-    protected $searchCriteriaBuilder;
-    /**
-     * @var \Magento\Eav\Api\AttributeRepositoryInterface
-     */
-    protected $attributeRepository;
-
     public function __construct(
-        \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
-        \Magento\Eav\Api\AttributeRepositoryInterface $attributeRepository
+        protected SearchCriteriaBuilder $searchCriteriaBuilder,
+        protected AttributeRepositoryInterface $attributeRepository
     ) {
-            $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-            $this->attributeRepository = $attributeRepository;
     }
-    
-    public function toOptionArray()
+
+    /**
+     * @return array
+     */
+    public function toOptionArray(): array
     {
         $result = [];
         foreach ($this->getOptions() as $value => $label) {
             $result[] = [
-                 'value' => $value,
-                 'label' => $label,
-             ];
+                'value' => $value,
+                'label' => $label,
+            ];
         }
+
         return $result;
     }
 
-    public function getOptions()
+    /**
+     * @return array
+     */
+    public function getOptions(): array
     {
         $searchCriteria = $this->searchCriteriaBuilder->create();
         $attributeRepository = $this->attributeRepository->getList(
@@ -45,14 +46,14 @@ class MetadataProduct implements ArrayInterface
         );
 
         $optionsMetadata = [];
-        
+
         foreach ($attributeRepository->getItems() as $item) {
             if ($item->getAttributeCode() == 'media_gallery') {
                 continue;
             }
             $optionsMetadata[$item->getAttributeCode()] = $item->getFrontendLabel();
         }
-        
+
         return $optionsMetadata;
     }
 }

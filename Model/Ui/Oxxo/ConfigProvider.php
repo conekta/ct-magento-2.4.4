@@ -1,32 +1,36 @@
 <?php
+
 namespace Conekta\Payments\Model\Ui\Oxxo;
 
 use Conekta\Payments\Helper\Data as ConektaHelper;
-use Magento\Checkout\Model\Session;
+use Magento\Checkout\Model\{ConfigProviderInterface, Session};
+use Magento\Framework\Exception\{LocalizedException, NoSuchEntityException};
 use Magento\Framework\View\Asset\Repository;
-use Magento\Checkout\Model\ConfigProviderInterface;
+use Magento\Quote\Api\Data\CartInterface;
+use Magento\Quote\Model\Quote;
 
 class ConfigProvider implements ConfigProviderInterface
 {
-    const CODE = 'conekta_oxxo';
+    public const CODE = 'conekta_oxxo';
 
-    protected $_checkoutSession;
-
-    protected $_assetRepository;
-
-    protected $_conektaHelper;
-
+    /**
+     * @param Session $checkoutSession
+     * @param Repository $assetRepository
+     * @param ConektaHelper $conektaHelper
+     */
     public function __construct(
-        Session $checkoutSession,
-        Repository $assetRepository,
-        ConektaHelper $conektaHelper
+        protected Session $checkoutSession,
+        protected Repository $assetRepository,
+        protected ConektaHelper $conektaHelper
     ) {
-        $this->_checkoutSession = $checkoutSession;
-        $this->_assetRepository = $assetRepository;
-        $this->_conektaHelper = $conektaHelper;
     }
 
-    public function getConfig()
+    /**
+     * @return array
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
+     */
+    public function getConfig(): array
     {
         return [
             'payment' => [
@@ -37,8 +41,13 @@ class ConfigProvider implements ConfigProviderInterface
         ];
     }
 
+    /**
+     * @return CartInterface|Quote
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
+     */
     public function getQuote()
     {
-        return $this->_checkoutSession->getQuote();
+        return $this->checkoutSession->getQuote();
     }
 }

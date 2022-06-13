@@ -1,4 +1,5 @@
 <?php
+
 namespace Conekta\Payments\Gateway\Request\Oxxo;
 
 use Conekta\Payments\Helper\Data as ConektaHelper;
@@ -9,45 +10,42 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 
 class AuthorizeRequest implements BuilderInterface
 {
-    private $config;
-
-    private $subjectReader;
-
-    protected $_conektaHelper;
-
-    private $_conektaLogger;
-
+    /**
+     * @param ConfigInterface $config
+     * @param SubjectReader $subjectReader
+     * @param ConektaHelper $conektaHelper
+     * @param ConektaLogger $conektaLogger
+     */
     public function __construct(
-        ConfigInterface $config,
-        SubjectReader $subjectReader,
-        ConektaHelper $conektaHelper,
-        ConektaLogger $conektaLogger
+        private ConfigInterface $config,
+        private SubjectReader   $subjectReader,
+        protected ConektaHelper $conektaHelper,
+        private ConektaLogger   $conektaLogger
     ) {
-        $this->_conektaHelper = $conektaHelper;
-        $this->_conektaLogger = $conektaLogger;
-        $this->_conektaLogger->info('Request Oxxo AuthorizeRequest :: __construct');
-
-        $this->config = $config;
-        $this->subjectReader = $subjectReader;
+        $this->conektaLogger->info('Request Oxxo AuthorizeRequest :: __construct');
     }
 
-    public function build(array $buildSubject)
+    /**
+     * @param array $buildSubject
+     * @return array
+     */
+    public function build(array $buildSubject): array
     {
-        $this->_conektaLogger->info('Request Oxxo AuthorizeRequest :: build');
+        $this->conektaLogger->info('Request Oxxo AuthorizeRequest :: build');
 
         $paymentDO = $this->subjectReader->readPayment($buildSubject);
         $payment = $paymentDO->getPayment();
         $order = $paymentDO->getOrder();
-        
-        $expiry_date = $this->_conektaHelper->getExpiredAt();
-        $amount = $this->_conektaHelper->convertToApiPrice($order->getGrandTotalAmount());
+
+        $expiry_date = $this->conektaHelper->getExpiredAt();
+        $amount = $this->conektaHelper->convertToApiPrice($order->getGrandTotalAmount());
 
         $request['metadata'] = [
-            'plugin' => 'Magento',
-            'plugin_version' => $this->_conektaHelper->getMageVersion(),
-            'plugin_conekta_version' => $this->_conektaHelper->pluginVersion(),
-            'order_id'       => $order->getOrderIncrementId(),
-            'soft_validations'  => 'true'
+            'plugin'                 => 'Magento',
+            'plugin_version'         => $this->conektaHelper->getMageVersion(),
+            'plugin_conekta_version' => $this->conektaHelper->pluginVersion(),
+            'order_id'               => $order->getOrderIncrementId(),
+            'soft_validations'       => 'true'
         ];
 
         $request['payment_method_details'] = $this->getChargeOxxo($amount, $expiry_date);
@@ -57,11 +55,16 @@ class AuthorizeRequest implements BuilderInterface
         return $request;
     }
 
-    public function getChargeOxxo($amount, $expiry_date)
+    /**
+     * @param $amount
+     * @param $expiry_date
+     * @return array
+     */
+    public function getChargeOxxo($amount, $expiry_date): array
     {
         $charge = [
             'payment_method' => [
-                'type' => 'oxxo_cash',
+                'type'       => 'oxxo_cash',
                 'expires_at' => $expiry_date
             ],
             'amount' => $amount

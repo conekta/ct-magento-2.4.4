@@ -1,4 +1,5 @@
 <?php
+
 namespace Conekta\Payments\Gateway\Config\EmbedForm;
 
 use Conekta\Payments\Helper\Data as ConektaHelper;
@@ -6,15 +7,20 @@ use Magento\Payment\Gateway\Config\ValueHandlerInterface;
 
 class ActiveValueHandler implements ValueHandlerInterface
 {
-    protected $_conektaHelper;
-
+    /**
+     * @param ConektaHelper $_conektaHelper
+     */
     public function __construct(
-        ConektaHelper $conektaHelper
+        protected ConektaHelper $_conektaHelper
     ) {
-        $this->_conektaHelper = $conektaHelper;
     }
 
-    public function handle(array $subject, $storeId = null)
+    /**
+     * @param array $subject
+     * @param $storeId
+     * @return bool
+     */
+    public function handle(array $subject, $storeId = null): bool
     {
         return $this->_conektaHelper->isCreditCardEnabled()
                || $this->_conektaHelper->isOxxoEnabled()

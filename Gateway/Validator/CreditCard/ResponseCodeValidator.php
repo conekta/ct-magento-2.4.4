@@ -1,13 +1,15 @@
 <?php
+
 namespace Conekta\Payments\Gateway\Validator\CreditCard;
 
-use Magento\Payment\Gateway\Validator\AbstractValidator;
-use Magento\Payment\Gateway\Validator\ResultInterface;
-use Conekta\Payments\Gateway\Http\Client\TransactionCapture;
+use Conekta\Payments\Gateway\Http\Client\CreditCard\TransactionCapture;
+use Magento\Payment\Gateway\Validator\{AbstractValidator, ResultInterface};
+
+//use Conekta\Payments\Gateway\Http\Client\TransactionCapture;
 
 class ResponseCodeValidator extends AbstractValidator
 {
-    const RESULT_CODE = 'RESULT_CODE';
+    public const RESULT_CODE = 'RESULT_CODE';
 
     /**
      * Performs validation of result code
@@ -17,7 +19,7 @@ class ResponseCodeValidator extends AbstractValidator
      */
     public function validate(array $validationSubject)
     {
-        if (!isset($validationSubject['response']) || !is_array($validationSubject['response'])) {
+        if (! isset($validationSubject['response']) || ! is_array($validationSubject['response'])) {
             throw new \InvalidArgumentException('Response does not exist');
         }
 
@@ -40,9 +42,8 @@ class ResponseCodeValidator extends AbstractValidator
      * @param array $response
      * @return bool
      */
-    private function isSuccessfulTransaction(array $response)
+    private function isSuccessfulTransaction(array $response): bool
     {
-        return isset($response[self::RESULT_CODE])
-        && $response[self::RESULT_CODE] !== TransactionCapture::FAILURE;
+        return isset($response[self::RESULT_CODE]) && $response[self::RESULT_CODE] !== TransactionCapture::FAILURE;
     }
 }

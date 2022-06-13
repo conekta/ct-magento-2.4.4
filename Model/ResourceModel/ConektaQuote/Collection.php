@@ -1,13 +1,17 @@
 <?php
+
 namespace Conekta\Payments\Model\ResourceModel\ConektaQuote;
 
-use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Conekta\Payments\Model\ConektaQuote;
 use Conekta\Payments\Model\ResourceModel\ConektaQuote as ResourceConektaQuote;
+use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
 class Collection extends AbstractCollection
 {
-    protected function _construct()
+    /**
+     * @return void
+     */
+    protected function _construct(): void
     {
         $this->_init(
             ConektaQuote::class,
