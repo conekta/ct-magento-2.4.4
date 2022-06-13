@@ -2,14 +2,14 @@
 
 namespace Conekta\Payments\Gateway\Request\CreditCard;
 
+use Conekta\Payments\Gateway\Request\Contracts\CaptureRequestInterface;
 use Conekta\Payments\Helper\Data as ConektaHelper;
 use Conekta\Payments\Logger\Logger as ConektaLogger;
 use Magento\Framework\Validator\Exception;
 use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Payment\Gateway\Request\BuilderInterface;
 
-class CaptureRequest implements BuilderInterface
+class CaptureRequest implements CaptureRequestInterface
 {
     /**
      * @param ConfigInterface $config
@@ -51,7 +51,7 @@ class CaptureRequest implements BuilderInterface
                 $token
             );
             $request['metadata'] = [
-                'plugin'                 => 'Magento',
+                'plugin'                 => self::PluginName,
                 'plugin_version'         => $this->conektaHelper->getMageVersion(),
                 'plugin_conekta_version' => $this->conektaHelper->pluginVersion(),
                 'order_id'               => $order->getOrderIncrementId(),

@@ -2,13 +2,13 @@
 
 namespace Conekta\Payments\Gateway\Request\Spei;
 
+use Conekta\Payments\Gateway\Request\Contracts\AutorizeRequestInterface;
 use Conekta\Payments\Helper\Data as ConektaHelper;
 use Conekta\Payments\Logger\Logger as ConektaLogger;
 use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Payment\Gateway\Request\BuilderInterface;
 
-class AuthorizeRequest implements BuilderInterface
+class AuthorizeRequest implements AutorizeRequestInterface
 {
     /**
      * @param ConfigInterface $config
@@ -31,8 +31,6 @@ class AuthorizeRequest implements BuilderInterface
      */
     public function build(array $buildSubject): array
     {
-        $this->conektaLogger->info('Request Spei AuthorizeRequest :: build');
-
         $paymentDO = $this->subjectReader->readPayment($buildSubject);
         $payment = $paymentDO->getPayment();
         $order = $paymentDO->getOrder();
@@ -40,9 +38,9 @@ class AuthorizeRequest implements BuilderInterface
         $amount = $this->conektaHelper->convertToApiPrice($order->getGrandTotalAmount());
 
         $request['metadata'] = [
-            'plugin'                 => 'Magento',
+            'plugin'                 => self::PluginName,
             'plugin_version'         => $this->conektaHelper->getMageVersion(),
-            'plugin_conekta_version' => $this->_conektaHelper->pluginVersion(),
+            'plugin_conekta_version' => $this->conektaHelper->pluginVersion(),
             'order_id'               => $order->getOrderIncrementId(),
             'soft_validations'       => 'true'
         ];
@@ -63,7 +61,7 @@ class AuthorizeRequest implements BuilderInterface
     {
         $charge = [
             'payment_method' => [
-                'type'       => 'spei',
+                'type'       => self::SpeiType,
                 'expires_at' => $expiry_date
             ],
             'amount' => $amount

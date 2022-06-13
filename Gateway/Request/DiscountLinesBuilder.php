@@ -4,6 +4,7 @@ namespace Conekta\Payments\Gateway\Request;
 
 use Conekta\Payments\Helper\Data as ConektaHelper;
 use Conekta\Payments\Logger\Logger as ConektaLogger;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
@@ -27,12 +28,11 @@ class DiscountLinesBuilder implements BuilderInterface
 
     /**
      * @param array $buildSubject
-     * @return mixed
+     * @return array
+     * @throws NoSuchEntityException
      */
     public function build(array $buildSubject)
     {
-        $this->conektaLogger->info('Request DiscountLinesBuilder :: build');
-
         $paymentDO = $this->subjectReader->readPayment($buildSubject);
         $payment = $paymentDO->getPayment();
         $quote_id = $payment->getAdditionalInformation('quote_id');
@@ -49,8 +49,6 @@ class DiscountLinesBuilder implements BuilderInterface
         } else {
             $request['discount_lines'] = [];
         }
-
-        $this->conektaLogger->info('Request DiscountLinesBuilder :: build : return request', $request);
 
         return $request;
     }

@@ -2,13 +2,13 @@
 
 namespace Conekta\Payments\Gateway\Request\Oxxo;
 
+use Conekta\Payments\Gateway\Request\Contracts\AutorizeRequestInterface;
 use Conekta\Payments\Helper\Data as ConektaHelper;
 use Conekta\Payments\Logger\Logger as ConektaLogger;
 use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Payment\Gateway\Request\BuilderInterface;
 
-class AuthorizeRequest implements BuilderInterface
+class AuthorizeRequest implements AutorizeRequestInterface
 {
     /**
      * @param ConfigInterface $config
@@ -41,7 +41,7 @@ class AuthorizeRequest implements BuilderInterface
         $amount = $this->conektaHelper->convertToApiPrice($order->getGrandTotalAmount());
 
         $request['metadata'] = [
-            'plugin'                 => 'Magento',
+            'plugin'                 => self::PluginName,
             'plugin_version'         => $this->conektaHelper->getMageVersion(),
             'plugin_conekta_version' => $this->conektaHelper->pluginVersion(),
             'order_id'               => $order->getOrderIncrementId(),
@@ -64,7 +64,7 @@ class AuthorizeRequest implements BuilderInterface
     {
         $charge = [
             'payment_method' => [
-                'type'       => 'oxxo_cash',
+                'type'       => self::OxxoType,
                 'expires_at' => $expiry_date
             ],
             'amount' => $amount

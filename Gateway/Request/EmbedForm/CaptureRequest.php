@@ -3,6 +3,7 @@
 namespace Conekta\Payments\Gateway\Request\EmbedForm;
 
 use Conekta\Customer as ConektaCustomer;
+use Conekta\Payments\Gateway\Request\Contracts\CaptureRequestInterface;
 use Conekta\Payments\Helper\Data as ConektaHelper;
 use Conekta\Payments\Logger\Logger as ConektaLogger;
 use Conekta\Payments\Model\Config;
@@ -11,9 +12,8 @@ use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Payment\Gateway\ConfigInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Payment\Gateway\Request\BuilderInterface;
 
-class CaptureRequest implements BuilderInterface
+class CaptureRequest implements CaptureRequestInterface
 {
     /**
      * CaptureRequest constructor.
@@ -46,7 +46,10 @@ class CaptureRequest implements BuilderInterface
         $paymentDO = $this->subjectReader->readPayment($buildSubject);
         $payment = $paymentDO->getPayment();
         $order = $paymentDO->getOrder();
-        $this->conektaLogger->info('Request CaptureRequest :: build additional', $payment->getAdditionalInformation());
+        $this->conektaLogger->info(
+            'Request CaptureRequest :: build additional',
+            $payment->getAdditionalInformation()
+        );
         $token = $payment->getAdditionalInformation('card_token');
         $savedCard = $payment->getAdditionalInformation('saved_card');
         $enableSavedCard = $payment->getAdditionalInformation('saved_card_later');
@@ -57,7 +60,7 @@ class CaptureRequest implements BuilderInterface
         $amount = (int)($order->getGrandTotalAmount() * 100);
 
         $request['metadata'] = [
-            'plugin'           => 'Magento',
+            'plugin'           => self::PluginName,
             'plugin_version'   => $this->conektaHelper->getMageVersion(),
             'order_id'         => $order->getOrderIncrementId(),
             'soft_validations' => 'true'

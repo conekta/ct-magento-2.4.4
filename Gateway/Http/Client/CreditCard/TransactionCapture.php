@@ -149,11 +149,10 @@ class TransactionCapture implements ClientInterface
      */
     protected function generateResponseForCode($resultCode, $txn_id, $ord_id): array
     {
-        $this->conektaLogger->info('HTTP Client TransactionCapture :: generateResponseForCode');
-
         if (empty($txn_id)) {
             $txn_id = $this->generateTxnId();
         }
+
         return array_merge(
             [
                 'RESULT_CODE' => $resultCode,
@@ -169,8 +168,6 @@ class TransactionCapture implements ClientInterface
      */
     protected function generateTxnId(): string
     {
-        $this->conektaLogger->info('HTTP Client TransactionCapture :: generateTxnId');
-
         return sha1(random_int(0, 1000));
     }
 }
