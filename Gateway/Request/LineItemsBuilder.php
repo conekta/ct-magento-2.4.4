@@ -1,4 +1,5 @@
 <?php
+
 namespace Conekta\Payments\Gateway\Request;
 
 use Conekta\Payments\Helper\Data as ConektaHelper;
@@ -10,31 +11,31 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 
 class LineItemsBuilder implements BuilderInterface
 {
-    private $_product;
-
-    private $_conektaLogger;
-
-    protected $_conektaHelper;
-
+    /**
+     * @param Product $product
+     * @param Escaper $escaper
+     * @param ConektaHelper $conektaHelper
+     * @param ConektaLogger $conektaLogger
+     */
     public function __construct(
-        Product $product,
-        Escaper $_escaper,
-        ConektaHelper $conektaHelper,
-        ConektaLogger $conektaLogger
+        private Product $product,
+        private Escaper $escaper,
+        protected ConektaHelper $conektaHelper,
+        protected ConektaLogger $conektaLogger
     ) {
-        $this->_conektaLogger = $conektaLogger;
-        $this->_conektaLogger->info('Request LineItemsBuilder :: __construct');
-        $this->_product = $product;
-        $this->_conektaHelper = $conektaHelper;
-        $this->_escaper = $_escaper;
+        $this->conektaLogger->info('Request LineItemsBuilder :: __construct');
     }
 
+    /**
+     * @param array $buildSubject
+     * @return mixed
+     */
     public function build(array $buildSubject)
     {
-        $this->_conektaLogger->info('Request LineItemsBuilder :: build');
+        $this->conektaLogger->info('Request LineItemsBuilder :: build');
 
-        if (!isset($buildSubject['payment'])
-            || !$buildSubject['payment'] instanceof PaymentDataObjectInterface
+        if (! isset($buildSubject['payment'])
+            || ! $buildSubject['payment'] instanceof PaymentDataObjectInterface
         ) {
             throw new \InvalidArgumentException('Payment data object should be provided');
         }
@@ -42,9 +43,9 @@ class LineItemsBuilder implements BuilderInterface
         $payment = $buildSubject['payment'];
         $order = $payment->getOrder();
         $items = $order->getItems();
-        $request['line_items'] = $this->_conektaHelper->getLineItems($items, false);
+        $request['line_items'] = $this->conektaHelper->getLineItems($items, false);
 
-        $this->_conektaLogger->info('Request LineItemsBuilder :: build : return request', $request);
+        $this->conektaLogger->info('Request LineItemsBuilder :: build : return request', $request);
 
         return $request;
     }

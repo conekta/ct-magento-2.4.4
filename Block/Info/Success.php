@@ -1,7 +1,11 @@
 <?php
+
 namespace Conekta\Payments\Block\Info;
 
 use Magento\Checkout\Block\Onepage\Success as CompleteCheckout;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Sales\Model\Order;
+use Magento\Store\Model\{ScopeInterface, Store};
 
 class Success extends CompleteCheckout
 {
@@ -9,47 +13,49 @@ class Success extends CompleteCheckout
      * getInstructions getter
      * @return Order Object
      */
-    public function getInstructions($type)
+    public function getInstructions($type): Order
     {
         if ($type == 'oxxo') {
             return $this->_scopeConfig->getValue(
                 'payment/conekta_oxxo/instructions',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+                ScopeInterface::SCOPE_STORE
             );
-        } elseif ($type == 'spei') {
+        }
+        if ($type == 'spei') {
             return $this->_scopeConfig->getValue(
                 'payment/conekta_spei/instructions',
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+                ScopeInterface::SCOPE_STORE
             );
         }
     }
+
     /**
      * getMethod getter
-     * @return Order Object
+     * @return string Object
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->getOrder()->getPayment()->getMethod();
     }
+
     /**
      *  getOfflineInfo getter
      * @return Order Object
+     * @throws LocalizedException
      */
-    public function getOfflineInfo()
+    public function getOfflineInfo(): Order
     {
-        $offline_info = $this->getOrder()
+        return $this->getOrder()
             ->getPayment()
             ->getMethodInstance()
             ->getInfoInstance()
-            ->getAdditionalInformation("offline_info");
-
-        return $offline_info;
+            ->getAdditionalInformation('offline_info');
     }
     /**
      * getOrder getter
      * @return Order Object
      */
-    public function getOrder()
+    public function getOrder(): Order
     {
         return $this->_checkoutSession->getLastRealOrder();
     }
@@ -57,11 +63,11 @@ class Success extends CompleteCheckout
      * getAccountOwner getter
      * @return Store Instance
      */
-    public function getAccountOwner()
+    public function getAccountOwner(): Store
     {
         return $this->_scopeConfig->getValue(
             'payment/conekta_spei/account_owner',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            ScopeInterface::SCOPE_STORE
         );
     }
 }

@@ -1,69 +1,54 @@
 <?php
+
 namespace Conekta\Payments\Gateway\Http\Client\Spei;
 
+use Conekta\Order as ConektaOrder;
+use Conekta\Payments\Api\Data\ConektaSalesOrderInterface;
 use Conekta\Payments\Gateway\Http\Util\HttpUtil;
 use Conekta\Payments\Helper\Data as ConektaHelper;
 use Conekta\Payments\Logger\Logger as ConektaLogger;
-use Magento\Payment\Gateway\Http\ClientInterface;
-use Magento\Payment\Gateway\Http\TransferInterface;
-use Magento\Payment\Model\Method\Logger;
-use Conekta\Order as ConektaOrder;
-use Conekta\Payments\Api\Data\ConektaSalesOrderInterface;
 use Conekta\Payments\Model\ConektaSalesOrderFactory;
+use Magento\Framework\Exception\ValidatorException;
+use Magento\Framework\Validator\Exception;
+use Magento\Payment\Gateway\Http\{ClientInterface, TransferInterface};
+use Magento\Payment\Model\Method\Logger;
 
 class TransactionAuthorize implements ClientInterface
 {
-    const SUCCESS = 1;
-    const FAILURE = 0;
+    public const SUCCESS = 1;
+    public const FAILURE = 0;
 
     /**
      * @var array
      */
-    private $results = [
+    private array $results = [
         self::SUCCESS,
         self::FAILURE
     ];
 
     /**
-     * @var Logger
-     */
-    private $logger;
-
-    protected $_conektaHelper;
-
-    private $_conektaLogger;
-
-    private $_conektaOrder;
-
-    protected $_httpUtil;
-
-    protected $conektaSalesOrderFactory;
-
-    /**
      * @param Logger $logger
      * @param ConektaHelper $conektaHelper
      * @param ConektaLogger $conektaLogger
+     * @param ConektaOrder $conektaOrder
+     * @param HttpUtil $httpUtil
+     * @param ConektaSalesOrderFactory $conektaSalesOrderFactory
+     * @throws Exception
      */
     public function __construct(
-        Logger $logger,
-        ConektaHelper $conektaHelper,
-        ConektaLogger $conektaLogger,
-        ConektaOrder $conektaOrder,
-        HttpUtil $httpUtil,
-        ConektaSalesOrderFactory $conektaSalesOrderFactory
+        private Logger                     $logger,
+        protected ConektaHelper            $conektaHelper,
+        private ConektaLogger              $conektaLogger,
+        private ConektaOrder               $conektaOrder,
+        protected HttpUtil                 $httpUtil,
+        protected ConektaSalesOrderFactory $conektaSalesOrderFactory
     ) {
-        $this->_conektaHelper = $conektaHelper;
-        $this->_conektaLogger = $conektaLogger;
-        $this->_conektaOrder = $conektaOrder;
-        $this->_httpUtil = $httpUtil;
-        $this->_conektaLogger->info('HTTP Client Spei TransactionAuthorize :: __construct');
-        $this->logger = $logger;
-        $this->conektaSalesOrderFactory = $conektaSalesOrderFactory;
-
         $config = [
             'locale' => 'es'
         ];
-        $this->_httpUtil->setupConektaClient($config);
+
+        $this->conektaLogger->info('HTTP Client Spei TransactionAuthorize :: __construct');
+        $this->httpUtil->setupConektaClient($config);
     }
 
     /**
@@ -71,24 +56,25 @@ class TransactionAuthorize implements ClientInterface
      *
      * @param TransferInterface $transferObject
      * @return array
+     * @throws ValidatorException
      */
-    public function placeRequest(TransferInterface $transferObject)
+    public function placeRequest(TransferInterface $transferObject): array
     {
-        $this->_conektaLogger->info('HTTP Client Spei TransactionAuthorize :: placeRequest');
+        $this->conektaLogger->info('HTTP Client Spei TransactionAuthorize :: placeRequest');
         $request = $transferObject->getBody();
 
-        $orderParams['currency']         = $request['CURRENCY'];
-        $orderParams['line_items']       = $request['line_items'];
-        $orderParams['tax_lines']        = $request['tax_lines'];
-        $orderParams['customer_info']    = $request['customer_info'];
-        $orderParams['discount_lines']   = $request['discount_lines'];
-        if (!empty($request['shipping_lines'])) {
-            $orderParams['shipping_lines']   = $request['shipping_lines'];
+        $orderParams['currency'] = $request['CURRENCY'];
+        $orderParams['line_items'] = $request['line_items'];
+        $orderParams['tax_lines'] = $request['tax_lines'];
+        $orderParams['customer_info'] = $request['customer_info'];
+        $orderParams['discount_lines'] = $request['discount_lines'];
+        if (! empty($request['shipping_lines'])) {
+            $orderParams['shipping_lines'] = $request['shipping_lines'];
         }
-        if (!empty($request['shipping_contact'])) {
+        if (! empty($request['shipping_contact'])) {
             $orderParams['shipping_contact'] = $request['shipping_contact'];
         }
-        $orderParams['metadata']         = $request['metadata'];
+        $orderParams['metadata'] = $request['metadata'];
         $chargeParams = $request['payment_method_details'];
 
         $result_code = '';
@@ -97,23 +83,22 @@ class TransactionAuthorize implements ClientInterface
         $error_code = '';
 
         try {
-            $conektaOrder= $this->_conektaOrder->create($orderParams);
-            
+            $conektaOrder = $this->conektaOrder->create($orderParams);
+
             $charge = $conektaOrder->createCharge($chargeParams);
 
-            if (isset($charge->id) && isset($conektaOrder->id)) {
+            if (isset($charge->id, $conektaOrder->id)) {
                 $result_code = 1;
                 $txn_id = $charge->id;
                 $ord_id = $conektaOrder->id;
 
                 $this->conektaSalesOrderFactory
-                        ->create()
-                        ->setData([
-                            ConektaSalesOrderInterface::CONEKTA_ORDER_ID => $ord_id,
-                            ConektaSalesOrderInterface::INCREMENT_ORDER_ID => $orderParams['metadata']['order_id']
-                        ])
-                        ->save();
-
+                    ->create()
+                    ->setData([
+                        ConektaSalesOrderInterface::CONEKTA_ORDER_ID   => $ord_id,
+                        ConektaSalesOrderInterface::INCREMENT_ORDER_ID => $orderParams['metadata']['order_id']
+                    ])
+                    ->save();
             } else {
                 $result_code = 666;
             }
@@ -121,14 +106,14 @@ class TransactionAuthorize implements ClientInterface
             $error_code = $e->getMessage();
             $result_code = 666;
             $this->logger->error(__('[Conekta]: Payment capturing error.'));
-            $this->_conektaHelper->deleteSavedCard($orderParams, $chargeParams);
+            $this->conektaHelper->deleteSavedCard($orderParams, $chargeParams);
             $this->logger->debug(
                 [
-                    'request' => $request,
+                    'request'  => $request,
                     'response' => $e->getMessage()
                 ]
             );
-            $this->_conektaLogger->info(
+            $this->conektaLogger->info(
                 'HTTP Client Spei TransactionAuthorize :: placeRequest: Payment authorize error ' . $e->getMessage()
             );
             throw new ValidatorException(__($e->getMessage()));
@@ -141,11 +126,11 @@ class TransactionAuthorize implements ClientInterface
         );
 
         $response['offline_info'] = [
-            "type" => $charge->payment_method->type,
-            "data" => [
-                "clabe"         => $charge->payment_method->clabe,
-                "bank_name"     => $charge->payment_method->bank,
-                "expires_at"    => $charge->payment_method->expires_at
+            'type' => $charge->payment_method->type,
+            'data' => [
+                'clabe'      => $charge->payment_method->clabe,
+                'bank_name'  => $charge->payment_method->bank,
+                'expires_at' => $charge->payment_method->expires_at
             ]
         ];
 
@@ -153,33 +138,39 @@ class TransactionAuthorize implements ClientInterface
 
         $this->logger->debug(
             [
-                'request' => $request,
+                'request'  => $request,
                 'response' => $response
             ]
         );
 
-        $this->_conektaLogger->info(
+        $this->conektaLogger->info(
             'HTTP Client Spei TransactionAuthorize :: placeRequest',
             [
-                'request' => $request,
+                'request'  => $request,
                 'response' => $response
             ]
         );
 
-        $response['payment_method_details'] =  $request['payment_method_details'];
+        $response['payment_method_details'] = $request['payment_method_details'];
 
         return $response;
     }
 
-    protected function generateResponseForCode($resultCode, $txn_id, $ord_id)
+    /**
+     * @param $resultCode
+     * @param $txn_id
+     * @param $ord_id
+     * @return array
+     */
+    protected function generateResponseForCode($resultCode, $txn_id, $ord_id): array
     {
-        $this->_conektaLogger->info('HTTP Client Spei TransactionAuthorize :: generateResponseForCode');
+        $this->conektaLogger->info('HTTP Client Spei TransactionAuthorize :: generateResponseForCode');
 
         return array_merge(
             [
                 'RESULT_CODE' => $resultCode,
-                'TXN_ID' => $txn_id,
-                'ORD_ID' => $ord_id
+                'TXN_ID'      => $txn_id,
+                'ORD_ID'      => $ord_id
             ]
         );
     }

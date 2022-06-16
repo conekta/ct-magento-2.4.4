@@ -1,37 +1,60 @@
 <?php
+
 namespace Conekta\Payments\Model;
 
 use Conekta\Payments\Api\Data\ConektaQuoteInterface;
-use Magento\Framework\Model\AbstractModel;
 use Conekta\Payments\Model\ResourceModel\ConektaQuote as ResourceConektaQuote;
+use Magento\Framework\Model\AbstractModel;
 
 class ConektaQuote extends AbstractModel implements ConektaQuoteInterface
 {
-
-    protected function _construct()
+    /**
+     * @return void
+     */
+    protected function _construct(): void
     {
         $this->_init(ResourceConektaQuote::class);
     }
 
-    public function setQuoteId($value)
+    /**
+     * @param $value
+     * @return void
+     */
+    public function setQuoteId($value): void
     {
         $this->setData(ConektaQuoteInterface::QUOTE_ID, $value);
     }
-    public function getQuoteId()
+
+    /**
+     * @return int
+     */
+    public function getQuoteId(): int
     {
         return $this->getData(ConektaQuoteInterface::QUOTE_ID);
     }
 
-    public function setConektaOrderId($value)
+    /**
+     * @param $value
+     * @return void
+     */
+    public function setConektaOrderId($value): void
     {
         $this->setData(ConektaQuoteInterface::CONEKTA_ORDER_ID, $value);
     }
-    public function getConektaOrderId()
+
+    /**
+     * @return string
+     */
+    public function getConektaOrderId(): string
     {
         return $this->getData(ConektaQuoteInterface::CONEKTA_ORDER_ID);
     }
 
-    public function loadByConektaOrderId($conektaOrderId)
+    /**
+     * @param $conektaOrderId
+     * @return $this
+     */
+    public function loadByConektaOrderId($conektaOrderId): ConektaQuote
     {
         return $this->loadByAttribute(ConektaQuoteInterface::CONEKTA_ORDER_ID, $conektaOrderId);
     }
@@ -43,9 +66,10 @@ class ConektaQuote extends AbstractModel implements ConektaQuoteInterface
      * @param string $value
      * @return $this
      */
-    public function loadByAttribute($attribute, $value)
+    public function loadByAttribute($attribute, $value): self
     {
         $this->load($value, $attribute);
+
         return $this;
     }
 }

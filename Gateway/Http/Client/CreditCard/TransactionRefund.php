@@ -1,56 +1,55 @@
 <?php
+
 namespace Conekta\Payments\Gateway\Http\Client\CreditCard;
 
+use Conekta\Order as ConektaOrder;
 use Conekta\Payments\Gateway\Http\Util\HttpUtil;
 use Conekta\Payments\Helper\Data as ConektaHelper;
 use Conekta\Payments\Logger\Logger as ConektaLogger;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Model\Context;
-use Magento\Payment\Gateway\Http\ClientInterface;
-use Magento\Payment\Gateway\Http\TransferInterface;
+use Magento\Framework\Validator\Exception;
+use Magento\Payment\Gateway\Http\{ClientInterface, TransferInterface};
 use Magento\Payment\Model\Method\Logger;
-use Conekta\Order as ConektaOrder;
 
 class TransactionRefund implements ClientInterface
 {
-    protected $_conektaHelper;
-
-    private $_conektaLogger;
-
-    private $logger;
-
-    protected $_httpUtil;
-
-    private $_conektaOrder;
-
+    /**
+     * @param ConektaHelper $_conektaHelper
+     * @param ConektaLogger $conektaLogger
+     * @param ConektaOrder $conektaOrder
+     * @param HttpUtil $_httpUtil
+     * @param Context $context
+     * @param EncryptorInterface $encryptor
+     * @param Logger $logger
+     * @param array $data
+     * @throws Exception
+     */
     public function __construct(
-        ConektaHelper $conektaHelper,
-        ConektaLogger $conektaLogger,
-        ConektaOrder $conektaOrder,
-        HttpUtil $httpUtil,
-        Context $context,
-        EncryptorInterface $encryptor,
-        Logger $logger,
+        protected ConektaHelper $_conektaHelper,
+        private ConektaLogger $conektaLogger,
+        private ConektaOrder $conektaOrder,
+        protected HttpUtil $_httpUtil,
+        private Context $context,
+        private EncryptorInterface $encryptor,
+        private Logger $logger,
         array $data = []
     ) {
-        $this->_conektaHelper = $conektaHelper;
-        $this->_conektaLogger = $conektaLogger;
-        $this->_conektaOrder = $conektaOrder;
-        $this->_httpUtil = $httpUtil;
-        $this->_encryptor = $encryptor;
-        $this->logger = $logger;
-
-        $this->_conektaLogger->info('HTTP Client CreditCard TransactionRefund :: __construct');
-
         $config = [
             'locale' => 'es'
         ];
+
+        $this->conektaLogger->info('HTTP Client CreditCard TransactionRefund :: __construct');
         $this->_httpUtil->setupConektaClient($config);
     }
 
-    public function placeRequest(TransferInterface $transferObject)
+    /**
+     * @param TransferInterface $transferObject
+     * @return array
+     */
+    public function placeRequest(TransferInterface $transferObject): array
     {
-        $this->_conektaLogger->info('HTTP Client CreditCard TransactionRefund :: placeRequest');
+        $this->conektaLogger->info('HTTP Client CreditCard TransactionRefund :: placeRequest');
 
         $request = $transferObject->getBody();
         $transactionId = $request['payment_transaction_id'];
@@ -58,7 +57,7 @@ class TransactionRefund implements ClientInterface
         $response = [];
         $response['refund_result']['transaction_id'] = $transactionId;
         try {
-            $order = $this->_conektaOrder->find($transactionId);
+            $order = $this->conektaOrder->find($transactionId);
             $order->refund([
                 'reason' => 'requested_by_client',
                 'amount' => $amount
@@ -74,7 +73,7 @@ class TransactionRefund implements ClientInterface
                 ]
             );
 
-            $this->_conektaLogger->info(
+            $this->conektaLogger->info(
                 'HTTP Client  CreditCard TransactionRefund :: placeRequest: Payment refund error ' . $error_code
             );
             $response['refund_result']['status'] = 'ERROR';
@@ -83,10 +82,10 @@ class TransactionRefund implements ClientInterface
 
         $response['transaction_id'] = $transactionId;
 
-        $this->_conektaLogger->info(
+        $this->conektaLogger->info(
             'HTTP Client TransactionCapture :: placeRequest',
             [
-                'request' => $request,
+                'request'  => $request,
                 'response' => $response
             ]
         );

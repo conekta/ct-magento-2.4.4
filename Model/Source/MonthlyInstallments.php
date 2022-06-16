@@ -9,7 +9,7 @@ class MonthlyInstallments implements \Magento\Framework\Option\ArrayInterface
      *
      * @return array
      */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         return [
             [
@@ -39,12 +39,12 @@ class MonthlyInstallments implements \Magento\Framework\Option\ArrayInterface
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
-                3 => __('3 Meses'),
-                6 => __('6 Meses'),
-                9 => __('9 Meses'),
+                3  => __('3 Meses'),
+                6  => __('6 Meses'),
+                9  => __('9 Meses'),
                 12 => __('12 Meses')
             ];
     }

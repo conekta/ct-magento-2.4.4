@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Conekta\Payments\Model\System\Config\Source;
@@ -10,8 +11,7 @@ class TimeFormat implements OptionSourceInterface
     /**
      * @return array
      */
-    
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         return [['value' => 1, 'label' => __('Days')], ['value' => 0, 'label' => __('Hours')]];
     }

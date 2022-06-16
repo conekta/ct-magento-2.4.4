@@ -1,31 +1,45 @@
 <?php
+
 namespace Conekta\Payments\Setup;
 
-use Magento\Framework\Setup\InstallSchemaInterface;
-use Magento\Framework\Setup\ModuleContextInterface;
-use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Ddl\Table;
+use Magento\Framework\Setup\{InstallSchemaInterface, ModuleContextInterface, SchemaSetupInterface};
+use Zend_Db_Exception;
 
+/**
+ * Class InstallSchema
+ * @package Conekta\Payments\Setup
+ */
 class InstallSchema implements InstallSchemaInterface
 {
-
+    /**
+     * @param SchemaSetupInterface $setup
+     * @param ModuleContextInterface $context
+     * @return void
+     * @throws Zend_Db_Exception
+     */
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         $installer = $setup;
         $installer->startSetup();
 
-        if (!$installer->tableExists('conekta_salesorder')) {
+        if (! $installer->tableExists('conekta_salesorder')) {
             $this->addConektaSalesOrderTable($setup);
         }
-        if (!$installer->tableExists('conekta_quote')) {
+        if (! $installer->tableExists('conekta_quote')) {
             $this->addConektaOrderQuote($setup);
         }
-        
+
         $installer->endSetup();
     }
 
-    private function addConektaSalesOrderTable(SchemaSetupInterface $setup)
+    /**
+     * @param SchemaSetupInterface $setup
+     * @return void
+     * @throws Zend_Db_Exception
+     */
+    private function addConektaSalesOrderTable(SchemaSetupInterface $setup): void
     {
         $installer = $setup;
         $table = $installer->getConnection()->newTable(
@@ -39,7 +53,7 @@ class InstallSchema implements InstallSchemaInterface
                 'identity' => true,
                 'nullable' => false,
                 'primary'  => true,
-                'unsigned'  => true
+                'unsigned' => true
             ],
             'Conekta Sales Order ID'
         )
@@ -85,7 +99,12 @@ class InstallSchema implements InstallSchemaInterface
         );
     }
 
-    private function addConektaOrderQuote(SchemaSetupInterface $setup)
+    /**
+     * @param SchemaSetupInterface $setup
+     * @return void
+     * @throws Zend_Db_Exception
+     */
+    private function addConektaOrderQuote(SchemaSetupInterface $setup): void
     {
         $installer = $setup;
         $table = $installer->getConnection()->newTable(
@@ -99,7 +118,7 @@ class InstallSchema implements InstallSchemaInterface
                 'identity' => false,
                 'nullable' => false,
                 'primary'  => true,
-                'unsigned'  => true
+                'unsigned' => true
             ],
             'Conekta Quote ID'
         )
@@ -124,7 +143,12 @@ class InstallSchema implements InstallSchemaInterface
             'Updated At'
         )
         ->addForeignKey(
-            $installer->getFkName('conekta_quote', 'quote_id', 'quote', 'entity_id'),
+            $installer->getFkName(
+                'conekta_quote',
+                'quote_id',
+                'quote',
+                'entity_id'
+            ),
             'quote_id',
             $installer->getTable('quote'),
             'entity_id',

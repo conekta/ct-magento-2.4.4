@@ -1,41 +1,28 @@
 <?php
+
 namespace Conekta\Payments\Model\Ui\EmbedForm;
 
 use Conekta\Payments\Helper\Data as ConektaHelper;
 use Conekta\Payments\Logger\Logger as ConektaLogger;
-use Magento\Checkout\Model\ConfigProviderInterface;
-use Magento\Checkout\Model\Session;
+use Magento\Checkout\Model\{ConfigProviderInterface, Session};
+use Magento\Framework\Exception\{LocalizedException, NoSuchEntityException};
 use Magento\Framework\UrlInterface;
+use Magento\Quote\Api\Data\CartInterface;
+use Magento\Quote\Model\Quote;
 
 class ConfigProvider implements ConfigProviderInterface
 {
     /**
-     * Payment method code
-     */
-    const CODE = 'conekta_ef';
-    const PAYMENT_METHOD_CREDIT_CARD = 'credit';
-    const PAYMENT_METHOD_OXXO = 'oxxo';
-    const PAYMENT_METHOD_SPEI = 'spei';
-    /**
      * Create Order Controller Path
      */
-    const CREATEORDER_URL = 'conekta/index/createorder';
+    public const CREATEORDER_URL = 'conekta/index/createorder';
     /**
-     * @var ConektaHelper
+     * Payment method code
      */
-    protected $_conektaHelper;
-    /**
-     * @var Session
-     */
-    protected $_checkoutSession;
-    /**
-     * @var ConektaLogger
-     */
-    protected $conektaLogger;
-    /**
-     * @var UrlInterface
-     */
-    protected $url;
+    public const CODE = 'conekta_ef';
+    public const PAYMENT_METHOD_CREDIT_CARD = 'credit';
+    public const PAYMENT_METHOD_OXXO = 'oxxo';
+    public const PAYMENT_METHOD_SPEI = 'spei';
 
     /**
      * ConfigProvider constructor.
@@ -45,32 +32,30 @@ class ConfigProvider implements ConfigProviderInterface
      * @param UrlInterface $url
      */
     public function __construct(
-        ConektaHelper $conektaHelper,
-        Session $checkoutSession,
-        ConektaLogger $conektaLogger,
-        UrlInterface $url
+        protected ConektaHelper $conektaHelper,
+        protected Session $checkoutSession,
+        protected ConektaLogger $conektaLogger,
+        protected UrlInterface $url
     ) {
-        $this->_conektaHelper = $conektaHelper;
-        $this->_checkoutSession = $checkoutSession;
-        $this->conektaLogger = $conektaLogger;
-        $this->url = $url;
     }
 
     /**
-     * @return array|\array[][]
+     * @return \array[][]
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
-    public function getConfig()
+    public function getConfig(): array
     {
         return [
             'payment' => [
                 self::CODE => [
-                    'hasVerification' => true,
-                    'monthly_installments' => $this->getMonthlyInstallments(),
-                    'active_monthly_installments' => $this->getMonthlyInstallments(),
+                    'hasVerification'                     => true,
+                    'monthly_installments'                => $this->getMonthlyInstallments(),
+                    'active_monthly_installments'         => $this->getMonthlyInstallments(),
                     'minimum_amount_monthly_installments' => $this->getMinimumAmountMonthlyInstallments(),
-                    'total' => $this->getQuote()->getGrandTotal(),
-                    'createOrderUrl' => $this->url->getUrl(self::CREATEORDER_URL),
-                    'paymentMethods' => $this->getPaymentMethodsActive(),
+                    'total'                               => $this->getQuote()->getGrandTotal(),
+                    'createOrderUrl'                      => $this->url->getUrl(self::CREATEORDER_URL),
+                    'paymentMethods'                      => $this->getPaymentMethodsActive(),
                 ]
             ]
         ];
@@ -81,28 +66,37 @@ class ConfigProvider implements ConfigProviderInterface
      */
     public function getEnableSaveCardConfig()
     {
-        return $this->_conektaHelper->getConfigData('conekta/conekta_global', 'enable_saved_card');
+        return $this->conektaHelper->getConfigData('conekta/conekta_global', 'enable_saved_card');
     }
 
     /**
-     * @return false|int[]|string[]
+     * @return array
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
-    public function getMonthlyInstallments()
+    public function getMonthlyInstallments(): array
     {
         $total = $this->getQuote()->getGrandTotal();
         $months = [1];
         if ((int)$this->getMinimumAmountMonthlyInstallments() < (int)$total) {
-            $months = explode(',', $this->_conektaHelper->getConfigData('conekta_cc', 'monthly_installments'));
-            if (!in_array("1", $months)) {
-                array_push($months, "1");
+            $months = explode(
+                ',',
+                $this->conektaHelper->getConfigData('conekta_cc', 'monthly_installments')
+            );
+
+            if (! in_array('1', $months)) {
+                array_push($months, '1');
             }
+
             asort($months);
+
             foreach ($months as $k => $v) {
                 if ((int)$total < ($v * 100)) {
                     unset($months[$k]);
                 }
             }
         }
+
         return $months;
     }
 
@@ -111,30 +105,33 @@ class ConfigProvider implements ConfigProviderInterface
      */
     public function getMinimumAmountMonthlyInstallments()
     {
-        return $this->_conektaHelper->getConfigData('conekta_cc', 'minimum_amount_monthly_installments');
+        return $this->conektaHelper->getConfigData('conekta_cc', 'minimum_amount_monthly_installments');
     }
 
     /**
-     * @return \Magento\Quote\Api\Data\CartInterface|\Magento\Quote\Model\Quote
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     * @return CartInterface|Quote
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
     public function getQuote()
     {
-        return $this->_checkoutSession->getQuote();
+        return $this->checkoutSession->getQuote();
     }
 
-    public function getPaymentMethodsActive()
+    /**
+     * @return array
+     */
+    public function getPaymentMethodsActive(): array
     {
         $methods = [];
 
-        if ($this->_conektaHelper->isCreditCardEnabled()) {
+        if ($this->conektaHelper->isCreditCardEnabled()) {
             $methods[] = 'Card';
         }
-        if ($this->_conektaHelper->isOxxoEnabled()) {
+        if ($this->conektaHelper->isOxxoEnabled()) {
             $methods[] = 'Cash';
         }
-        if ($this->_conektaHelper->isSpeiEnabled()) {
+        if ($this->conektaHelper->isSpeiEnabled()) {
             $methods[] = 'BankTransfer';
         }
         return $methods;

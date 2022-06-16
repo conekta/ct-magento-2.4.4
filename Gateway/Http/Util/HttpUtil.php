@@ -1,38 +1,47 @@
 <?php
+
 namespace Conekta\Payments\Gateway\Http\Util;
 
+use Conekta\Conekta;
 use Conekta\Payments\Helper\Data as ConektaHelper;
+use Magento\Framework\Validator\Exception;
 
 class HttpUtil
 {
-    protected $_conektaHelper;
-
+    /**
+     * @param ConektaHelper $conektaHelper
+     */
     public function __construct(
-        ConektaHelper $conektaHelper
+        protected ConektaHelper $conektaHelper
     ) {
-        $this->_conektaHelper = $conektaHelper;
     }
-    public function setupConektaClient($config)
+
+    /**
+     * @param $config
+     * @return void
+     * @throws Exception
+     */
+    public function setupConektaClient($config): void
     {
         try {
             $locale = $config['locale'];
-            $privateKey = $this->_conektaHelper->getPrivateKey();
-            $apiVersion = $this->_conektaHelper->getApiVersion();
-            $pluginType = $this->_conektaHelper->pluginType();
-            $pluginVersion = $this->_conektaHelper->pluginVersion();
+            $privateKey = $this->conektaHelper->getPrivateKey();
+            $apiVersion = $this->conektaHelper->getApiVersion();
+            $pluginType = $this->conektaHelper->pluginType();
+            $pluginVersion = $this->conektaHelper->pluginVersion();
 
-            if (empty($privateKey) && !empty($locale)) {
-                throw new \Magento\Framework\Validator\Exception(
-                    __("Please check your conekta config.")
+            if (empty($privateKey) && ! empty($locale)) {
+                throw new Exception(
+                    __('Please check your conekta config.')
                 );
             }
-            \Conekta\Conekta::setApiKey($privateKey);
-            \Conekta\Conekta::setApiVersion($apiVersion);
-            \Conekta\Conekta::setPlugin($pluginType);
-            \Conekta\Conekta::setPluginVersion($pluginVersion);
-            \Conekta\Conekta::setLocale($locale);
+            Conekta::setApiKey($privateKey);
+            Conekta::setApiVersion($apiVersion);
+            Conekta::setPlugin($pluginType);
+            Conekta::setPluginVersion($pluginVersion);
+            Conekta::setLocale($locale);
         } catch (\Exception $e) {
-            throw new \Magento\Framework\Validator\Exception(
+            throw new Exception(
                 __($e->getMessage())
             );
         }
