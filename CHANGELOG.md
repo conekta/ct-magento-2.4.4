@@ -9,7 +9,7 @@
 ### 4.1.0 - 2022/06/13 17:00
 * Feature 
   - Fix in OXXO order date format in magento admin. 
-  - Fix in purchases with free shipping. 
+  - Fix in purchases with free shipping.
   - Fixes for the marketplace store. 
   - Fixes to pass the MFTF tests. 
   - Listen to event notifications in the webhook saved in the store administration. 

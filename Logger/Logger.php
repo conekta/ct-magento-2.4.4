@@ -8,11 +8,15 @@ use Monolog\Logger as MonoLogger;
 
 class Logger
 {
+    private const LoggerName = 'ConektaPaymentsLogger';
     /**
-     * @param MonoLogger $monolog
+     * @var MonoLogger
      */
-    public function __construct(private MonoLogger $monolog)
+    private MonoLogger $monolog;
+
+    public function __construct()
     {
+        $this->monolog = new MonoLogger(self::LoggerName);
     }
 
     /**
@@ -38,7 +42,7 @@ class Logger
      * @param array $customerRequest
      * @return void
      */
-    public function info(string $string, array $customerRequest): void
+    public function info(string $string, array $customerRequest = []): void
     {
         $this->monolog->info($string, $customerRequest);
     }
@@ -48,7 +52,7 @@ class Logger
      * @param array $array
      * @return void
      */
-    public function error(string $string, array $array): void
+    public function error(string $string, array $array = []): void
     {
         $this->monolog->error($string, $array);
     }
