@@ -54,8 +54,7 @@ class Index extends Action implements CsrfAwareActionInterface
     {
         $this->conektaLogger->info('Controller Index :: execute');
 
-        $body = null;
-        $response = self::HTTP_BAD_REQUEST_CODE;
+        $response = self::HTTP_OK_REQUEST_CODE;
 
         try {
             $resultRaw = $this->resultRawFactory->create();
@@ -63,17 +62,16 @@ class Index extends Action implements CsrfAwareActionInterface
             $body = $this->helper->jsonDecode($this->getRequest()->getContent());
 
             if (! $body || $this->getRequest()->getMethod() !== 'POST') {
-                return $response;
+                return self::HTTP_BAD_REQUEST_CODE;
             }
 
             $event = $body['type'];
 
             $this->conektaLogger->info('Controller Index :: execute body json ', ['event' => $event]);
 
-            $response = self::HTTP_OK_REQUEST_CODE;
+            //$response = self::HTTP_OK_REQUEST_CODE;
             switch ($event) {
                 case self::EVENT_WEBHOOK_PING:
-                    $response = self::HTTP_OK_REQUEST_CODE;
                     break;
                 case self::EVENT_ORDER_CREATED:
                 case self::EVENT_ORDER_PENDING_PAYMENT:
@@ -88,9 +86,6 @@ class Index extends Action implements CsrfAwareActionInterface
                 case self::EVENT_ORDER_EXPIRED:
                     $this->webhookRepository->expireOrder($body);
                     break;
-                default:
-                    //If the event not exist, response Bad Request
-                    $response = self::HTTP_BAD_REQUEST_CODE;
             }
         } catch (Exception $e) {
             $this->conektaLogger->error('Controller Index :: ' . $e->getMessage());
