@@ -1,22 +1,22 @@
 <?php
+
 namespace Conekta\Payments\Gateway\Response\CreditCard;
 
+use Conekta\Payments\Logger\Logger as ConektaLogger;
 use Magento\Payment\Gateway\Data\PaymentDataObjectInterface;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Sales\Model\Order\Payment;
-use Conekta\Payments\Logger\Logger as ConektaLogger;
 
 class FraudHandler implements HandlerInterface
 {
-    const FRAUD_MSG_LIST = 'FRAUD_MSG_LIST';
+    public const FRAUD_MSG_LIST = 'FRAUD_MSG_LIST';
 
-    private $_conektaLogger;
-
-    public function __construct(
-        ConektaLogger $conektaLogger
-    ) {
-        $this->_conektaLogger = $conektaLogger;
-        $this->_conektaLogger->info('Response FraudHandler :: __construct');
+    /**
+     * @param ConektaLogger $conektaLogger
+     */
+    public function __construct(private ConektaLogger $conektaLogger)
+    {
+        $this->conektaLogger->info('Response FraudHandler :: __construct');
     }
 
     /**
@@ -28,14 +28,14 @@ class FraudHandler implements HandlerInterface
      */
     public function handle(array $handlingSubject, array $response)
     {
-        $this->_conektaLogger->info('Response FraudHandler :: handle');
+        $this->conektaLogger->info('Response FraudHandler :: handle');
 
-        if (!isset($response[self::FRAUD_MSG_LIST]) || !is_array($response[self::FRAUD_MSG_LIST])) {
+        if (! isset($response[self::FRAUD_MSG_LIST]) || ! is_array($response[self::FRAUD_MSG_LIST])) {
             return;
         }
 
-        if (!isset($handlingSubject['payment'])
-            || !$handlingSubject['payment'] instanceof PaymentDataObjectInterface
+        if (! isset($handlingSubject['payment'])
+            || ! $handlingSubject['payment'] instanceof PaymentDataObjectInterface
         ) {
             throw new \InvalidArgumentException('Payment data object should be provided');
         }

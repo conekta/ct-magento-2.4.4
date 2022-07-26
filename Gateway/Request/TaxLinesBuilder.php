@@ -1,4 +1,5 @@
 <?php
+
 namespace Conekta\Payments\Gateway\Request;
 
 use Conekta\Payments\Helper\Data as ConektaHelper;
@@ -10,30 +11,24 @@ use Magento\Tax\Model\ClassModel;
 
 class TaxLinesBuilder implements BuilderInterface
 {
-    private $_conektaLogger;
-
-    private $_conektaHelper;
-
     public function __construct(
-        Product $product,
-        ClassModel $taxClass,
-        ConektaLogger $conektaLogger,
-        ConektaHelper $conektaHelper
+        private Product $product,
+        private ClassModel $taxClass,
+        private ConektaLogger $conektaLogger,
+        private ConektaHelper $conektaHelper
     ) {
-        $this->_conektaLogger = $conektaLogger;
-        $this->_conektaLogger->info('Request TaxLinesBuilder :: __construct');
-        $this->_product = $product;
-        $this->_taxClass = $taxClass;
-        $this->_conektaHelper = $conektaHelper;
+        $this->conektaLogger->info('Request TaxLinesBuilder :: __construct');
     }
 
-    public function build(array $buildSubject)
+    /**
+     * @param array $buildSubject
+     * @return array
+     */
+    public function build(array $buildSubject): array
     {
-        $this->_conektaLogger->info('Request TaxLinesBuilder :: build');
+        $this->conektaLogger->info('Request TaxLinesBuilder :: build');
 
-        if (!isset($buildSubject['payment'])
-            || !$buildSubject['payment'] instanceof PaymentDataObjectInterface
-        ) {
+        if (! isset($buildSubject['payment']) || ! $buildSubject['payment'] instanceof PaymentDataObjectInterface) {
             throw new \InvalidArgumentException('Payment data object should be provided');
         }
 
@@ -41,10 +36,9 @@ class TaxLinesBuilder implements BuilderInterface
         $order = $payment->getOrder();
 
         $request = [];
+        $request['tax_lines'] = $this->conektaHelper->getTaxLines($order->getItems());
 
-        $request['tax_lines'] = $this->_conektaHelper->getTaxLines($order->getItems());
-
-        $this->_conektaLogger->info('Request TaxLinesBuilder :: build : return request', $request);
+        $this->conektaLogger->info('Request TaxLinesBuilder :: build : return request', $request);
 
         return $request;
     }

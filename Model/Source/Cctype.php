@@ -2,12 +2,14 @@
 
 namespace Conekta\Payments\Model\Source;
 
-class Cctype extends \Magento\Payment\Model\Source\Cctype
+use Magento\Payment\Model\Source\Cctype as MCctype;
+
+class Cctype extends MCctype
 {
     /**
      * @return array
      */
-    public function getAllowedTypes()
+    public function getAllowedTypes(): array
     {
         return [
             'VI', 'MC', 'AE'

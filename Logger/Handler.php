@@ -1,9 +1,11 @@
 <?php
+
 namespace Conekta\Payments\Logger;
 
+use Magento\Framework\Logger\Handler\Base;
 use Monolog\Logger;
 
-class Handler extends \Magento\Framework\Logger\Handler\Base
+class Handler extends Base
 {
     /**
      * Logging level

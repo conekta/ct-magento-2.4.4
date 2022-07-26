@@ -1,31 +1,21 @@
 <?php
+
 namespace Conekta\Payments\Gateway\Http;
 
-use Magento\Payment\Gateway\Http\TransferBuilder;
-use Magento\Payment\Gateway\Http\TransferFactoryInterface;
-use Magento\Payment\Gateway\Http\TransferInterface;
 use Conekta\Payments\Logger\Logger as ConektaLogger;
+use Magento\Payment\Gateway\Http\{TransferBuilder, TransferFactoryInterface, TransferInterface};
 
 class TransferFactory implements TransferFactoryInterface
 {
     /**
-     * @var TransferBuilder
-     */
-    private $transferBuilder;
-
-    private $_conektaLogger;
-
-    /**
      * @param TransferBuilder $transferBuilder
+     * @param ConektaLogger $conektaLogger
      */
     public function __construct(
-        TransferBuilder $transferBuilder,
-        ConektaLogger $conektaLogger
+        private TransferBuilder $transferBuilder,
+        private ConektaLogger $conektaLogger
     ) {
-        $this->_conektaLogger = $conektaLogger;
-        $this->_conektaLogger->info('HTTP TransferFactory :: __construct');
-
-        $this->transferBuilder = $transferBuilder;
+        $this->conektaLogger->info('HTTP TransferFactory :: __construct');
     }
 
     /**
@@ -34,9 +24,9 @@ class TransferFactory implements TransferFactoryInterface
      * @param array $request
      * @return TransferInterface
      */
-    public function create(array $request)
+    public function create(array $request): TransferInterface
     {
-        $this->_conektaLogger->info('HTTP TransferFactory :: create');
+        $this->conektaLogger->info('HTTP TransferFactory :: create');
 
         return $this->transferBuilder
             ->setBody($request)

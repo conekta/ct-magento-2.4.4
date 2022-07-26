@@ -1,4 +1,5 @@
 <?php
+
 namespace Conekta\Payments\Model\Ui;
 
 use Conekta\Payments\Helper\Data as ConektaHelper;
@@ -7,18 +8,16 @@ use Magento\Framework\View\Asset\Repository as AssetRepository;
 
 class ConfigProvider implements ConfigProviderInterface
 {
-    const CODE = 'conekta_global';
+    public const CODE = 'conekta_global';
 
-    protected $_conektaHelper;
-
-    private $assetRepository;
-
+    /**
+     * @param ConektaHelper $conektaHelper
+     * @param AssetRepository $assetRepository
+     */
     public function __construct(
-        ConektaHelper $conektaHelper,
-        AssetRepository $assetRepository
+        protected ConektaHelper $conektaHelper,
+        private AssetRepository $assetRepository
     ) {
-        $this->_conektaHelper = $conektaHelper;
-        $this->_assetRepository = $assetRepository;
     }
 
     /**
@@ -26,13 +25,13 @@ class ConfigProvider implements ConfigProviderInterface
      *
      * @return array
      */
-    public function getConfig()
+    public function getConfig(): array
     {
         return [
             'payment' => [
                 self::CODE => [
-                    'publicKey' => $this->_conektaHelper->getPublicKey(),
-                    'conekta_logo' => $this->_assetRepository->getUrl('Conekta_Payments::images/conekta.svg')
+                    'publicKey'    => $this->conektaHelper->getPublicKey(),
+                    'conekta_logo' => $this->assetRepository->getUrl('Conekta_Payments::images/conekta.svg')
                 ]
             ]
         ];

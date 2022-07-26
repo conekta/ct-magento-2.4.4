@@ -1,6 +1,11 @@
 <?php
+
 namespace Conekta\Payments\Api\Data;
 
+/**
+ * Interface ConektaQuoteInterface
+ * @package Conekta\Payments\Api\Data
+ */
 interface ConektaQuoteInterface
 {
     public const QUOTE_ID = 'quote_id';
@@ -10,22 +15,22 @@ interface ConektaQuoteInterface
     /**
      * @return int
      */
-    public function getQuoteId();
+    public function getQuoteId(): int;
 
     /**
      * @param int $value
      * @return void
      */
-    public function setQuoteId($value);
+    public function setQuoteId($value): void;
 
     /**
      * @return string
      */
-    public function getConektaOrderId();
+    public function getConektaOrderId(): string;
 
     /**
      * @param string $value
      * @return void
      */
-    public function setConektaOrderId($value);
+    public function setConektaOrderId($value): void;
 }

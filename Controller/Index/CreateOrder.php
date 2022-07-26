@@ -4,82 +4,56 @@ namespace Conekta\Payments\Controller\Index;
 
 use Conekta\Payments\Api\EmbedFormRepositoryInterface;
 use Conekta\Payments\Exception\ConektaException;
+use Conekta\Payments\Helper\ConektaOrder;
 use Conekta\Payments\Logger\Logger;
-use Exception;
-use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Checkout\Model\Session;
+use Magento\Framework\App\Action\{Action, Context, HttpPostActionInterface};
+use Magento\Framework\Controller\Result\{Json, JsonFactory};
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\View\Result\PageFactory;
 
-class CreateOrder extends \Magento\Framework\App\Action\Action implements HttpPostActionInterface
+class CreateOrder extends Action implements HttpPostActionInterface
 {
     /**
-     * @var \Magento\Framework\View\Result\PageFactory
-     */
-    protected $resultPageFactory;
-    /**
-     * @var \Magento\Framework\Serialize\Serializer\Json
-     */
-    protected $jsonHelper;
-    /**
-     * @var \Magento\Framework\Controller\Result\JsonFactory
-     */
-    protected $resultJsonFactory;
-    /**
-     * @var Logger
-     */
-    protected $logger;
-    /**
-     * @var \Conekta\Payments\Helper\ConektaOrder
-     */
-    protected $conektaOrderHelper;
-
-    private $embedFormRepository;
-
-    private $checkoutSession;
-
-    /**
      * CreateOrder constructor.
-     * @param \Magento\Framework\App\Action\Context $context
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
-     * @param \Magento\Framework\Controller\Result\JsonFactory $jsonFactory
-     * @param \Conekta\Payments\Helper\ConektaOrder $conektaOrderHelper
+     * @param Context $context
+     * @param PageFactory $resultPageFactory
+     * @param JsonFactory $resultJsonFactory
+     * @param ConektaOrder $conektaOrderHelper
      * @param Logger $logger
+     * @param EmbedFormRepositoryInterface $embedFormRepository
+     * @param Session $checkoutSession
      */
     public function __construct(
-        \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Magento\Framework\Controller\Result\JsonFactory $jsonFactory,
-        \Conekta\Payments\Helper\ConektaOrder $conektaOrderHelper,
-        Logger $logger,
-        EmbedFormRepositoryInterface $embedFormRepository,
-        Session $checkoutSession
+        Context                $context,
+        protected PageFactory  $resultPageFactory,
+        protected JsonFactory  $resultJsonFactory,
+        protected ConektaOrder $conektaOrderHelper,
+        protected Logger       $logger,
+        private                EmbedFormRepositoryInterface $embedFormRepository,
+        private Session        $checkoutSession
     ) {
-        $this->resultPageFactory = $resultPageFactory;
-        $this->logger = $logger;
-        $this->resultJsonFactory = $jsonFactory;
-        $this->conektaOrderHelper = $conektaOrderHelper;
-        $this->embedFormRepository = $embedFormRepository;
-        $this->checkoutSession = $checkoutSession;
         parent::__construct($context);
     }
 
     /**
      * Execute view action
      *
-     * @return \Magento\Framework\Controller\ResultInterface
+     * @return Json|ResultInterface
      */
     public function execute()
     {
-        $isAjax =  $this->getRequest()->isXmlHttpRequest();
+        $isAjax = $this->getRequest()->isXmlHttpRequest();
         $response = [];
-        
+
         $resultJson = $this->resultJsonFactory->create();
         $orderParams = [];
         if ($isAjax) {
             try {
-                /** @var \Magento\Framework\Controller\Result\Json $resultJson */
+                /** @var Json $resultJson */
                 $data = $this->getRequest()->getPostValue();
                 $guestEmail = $data['guestEmail'];
-                
+
                 //generate order params
                 $orderParams = $this->conektaOrderHelper->generateOrderParams($guestEmail);
 
@@ -91,11 +65,10 @@ class CreateOrder extends \Magento\Framework\App\Action\Action implements HttpPo
                     $orderParams,
                     $quoteSession->getSubtotal()
                 );
-                
+
                 $response['checkout_id'] = $order['checkout']['id'];
             } catch (\Exception $e) {
-                
-                $errorMessage = 'Ha ocurrido un error inesperado. Notifique al dueño de la tienda.';
+                $errorMessage = 'Ha ocurrido un error inesperado. Notifique al dueño de la tienda.' . $e->getMessage();
                 if ($e instanceof ConektaException) {
                     $errorMessage = $e->getMessage();
                 } else {
@@ -106,7 +79,7 @@ class CreateOrder extends \Magento\Framework\App\Action\Action implements HttpPo
                 $response['error_message'] = $errorMessage;
             }
         }
-        
+
         $resultJson->setData($response);
         return $resultJson;
     }

@@ -1,13 +1,17 @@
 <?php
+
 namespace Conekta\Payments\Model\ResourceModel\ConektaSalesOrder;
 
-use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Conekta\Payments\Model\ConektaSalesOrder;
 use Conekta\Payments\Model\ResourceModel\ConektaSalesOrder as ResourceConektaSalesOrder;
+use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
 class Collection extends AbstractCollection
 {
-    protected function _construct()
+    /**
+     * @return void
+     */
+    protected function _construct(): void
     {
         $this->_init(
             ConektaSalesOrder::class,

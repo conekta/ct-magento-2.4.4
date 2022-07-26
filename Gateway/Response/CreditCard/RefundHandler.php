@@ -1,46 +1,45 @@
 <?php
+
 namespace Conekta\Payments\Gateway\Response\CreditCard;
 
 use Conekta\Payments\Helper\Data as ConektaHelper;
 use Conekta\Payments\Logger\Logger as ConektaLogger;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
+use Magento\Sales\Api\Data\TransactionInterface;
 
 class RefundHandler implements HandlerInterface
 {
-    private $subjectReader;
-
-    protected $_conektaHelper;
-
-    private $_conektaLogger;
-
+    /**
+     * @param SubjectReader $subjectReader
+     * @param ConektaHelper $conektaHelper
+     * @param ConektaLogger $conektaLogger
+     */
     public function __construct(
-        SubjectReader $subjectReader,
-        ConektaHelper $conektaHelper,
-        ConektaLogger $conektaLogger
+        private SubjectReader $subjectReader,
+        protected ConektaHelper $conektaHelper,
+        private ConektaLogger $conektaLogger
     ) {
-        $this->_conektaHelper = $conektaHelper;
-        $this->_conektaLogger = $conektaLogger;
-        $this->_conektaLogger->info('Response RefundHandler :: __construct');
-        $this->subjectReader = $subjectReader;
+        $this->conektaLogger->info('Response RefundHandler :: __construct');
     }
 
-    public function handle(array $handlingSubject, array $response)
+    /**
+     * @param array $handlingSubject
+     * @param array $response
+     * @return void
+     */
+    public function handle(array $handlingSubject, array $response): void
     {
-        $this->_conektaLogger->info('Request RefundHandler :: handle');
+        $this->conektaLogger->info('Request RefundHandler :: handle');
 
         $paymentDO = $this->subjectReader->readPayment($handlingSubject);
         $payment = $paymentDO->getPayment();
         $transactionId = $response['refund_result']['transaction_id'];
-        $payment->setTransactionId(
-            $transactionId . '-'
-                . \Magento\Sales\Model\Order\Payment\Transaction::TYPE_REFUND
-        );
 
+        $payment->setTransactionId(sprintf('%s-%s', $transactionId, TransactionInterface::TYPE_REFUND));
         $payment->setParentTransactionId($transactionId);
         $payment->setIsTransactionClosed(true);
         $payment->setShouldCloseParentTransaction(true);
-
         $payment->setIsTransactionPending(false);
     }
 }

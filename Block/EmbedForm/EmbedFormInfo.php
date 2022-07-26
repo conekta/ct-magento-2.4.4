@@ -1,26 +1,37 @@
 <?php
+
 namespace Conekta\Payments\Block\EmbedForm;
 
 use Conekta\Payments\Model\Ui\EmbedForm\ConfigProvider;
 use Magento\Framework\View\Element\Template\Context;
+use Magento\Framework\{Exception, Phrase};
 use Magento\Payment\Block\Info;
 use Magento\Payment\Model\Config;
 
 class EmbedFormInfo extends Info
 {
-    protected $_paymentConfig;
-
+    /**
+     * @var string
+     */
     protected $_template = 'Conekta_Payments::info/embedform.phtml';
 
+    /**
+     * @param Context $context
+     * @param Config $_paymentConfig
+     * @param array $data
+     */
     public function __construct(
-        Context $context,
-        Config $paymentConfig,
-        array $data = []
+        Context          $context,
+        protected Config $_paymentConfig,
+        array            $data = []
     ) {
         parent::__construct($context, $data);
-        $this->_paymentConfig = $paymentConfig;
     }
 
+    /**
+     * @return Phrase|mixed
+     * @throws Exception\LocalizedException
+     */
     public function getCcTypeName()
     {
         $types = $this->_paymentConfig->getCcTypes();
@@ -31,11 +42,19 @@ class EmbedFormInfo extends Info
         return empty($ccType) ? __('N/A') : $ccType;
     }
 
+    /**
+     * @return mixed
+     * @throws Exception\LocalizedException
+     */
     public function getAdditionalData()
     {
         return $this->getInfo()->getAdditionalInformation();
     }
 
+    /**
+     * @return false|mixed
+     * @throws Exception\LocalizedException
+     */
     public function getOfflineInfo()
     {
         $additional_data = $this->getAdditionalData();
@@ -46,12 +65,20 @@ class EmbedFormInfo extends Info
         return false;
     }
 
+    /**
+     * @return mixed
+     * @throws Exception\LocalizedException
+     */
     public function getPaymentMethodType()
     {
         return $this->getInfo()->getAdditionalInformation('payment_method');
     }
 
-    public function getPaymentMethodTitle()
+    /**
+     * @return string
+     * @throws Exception\LocalizedException
+     */
+    public function getPaymentMethodTitle(): string
     {
         $methodType = $this->getPaymentMethodType();
         $title = '';
@@ -60,7 +87,6 @@ class EmbedFormInfo extends Info
             case ConfigProvider::PAYMENT_METHOD_CREDIT_CARD:
                 $title = 'Tarjeta de Crédito';
                 break;
-            
             case ConfigProvider::PAYMENT_METHOD_OXXO:
                 $title = 'Pago en Efectivo con Oxxo';
                 break;
@@ -72,17 +98,29 @@ class EmbedFormInfo extends Info
         return $title;
     }
 
-    public function isCreditCardPaymentMethod()
+    /**
+     * @return bool
+     * @throws Exception\LocalizedException
+     */
+    public function isCreditCardPaymentMethod(): bool
     {
         return $this->getPaymentMethodType() === ConfigProvider::PAYMENT_METHOD_CREDIT_CARD;
     }
 
-    public function isOxxoPaymentMethod()
+    /**
+     * @return bool
+     * @throws Exception\LocalizedException
+     */
+    public function isOxxoPaymentMethod(): bool
     {
         return $this->getPaymentMethodType() === ConfigProvider::PAYMENT_METHOD_OXXO;
     }
 
-    public function isSpeiPaymentMethod()
+    /**
+     * @return bool
+     * @throws Exception\LocalizedException
+     */
+    public function isSpeiPaymentMethod(): bool
     {
         return $this->getPaymentMethodType() === ConfigProvider::PAYMENT_METHOD_SPEI;
     }

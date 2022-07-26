@@ -1,25 +1,24 @@
 <?php
-declare(strict_types=1);
 
 namespace Conekta\Payments\Model\System\Config\Source;
 
 use Magento\Framework\Option\ArrayInterface;
+use Magento\Sales\Model\ResourceModel\Order;
 
 class MetadataOrder implements ArrayInterface
 {
     /**
-     * @var \Magento\Sales\Model\ResourceModel\Order
+     * @param Order $orderResource
      */
-
-    protected $orderResource;
-
     public function __construct(
-        \Magento\Sales\Model\ResourceModel\Order $orderResource
+        protected Order $orderResource
     ) {
-            $this->orderResource = $orderResource;
     }
-    
-    public function toOptionArray()
+
+    /**
+     * @return array
+     */
+    public function toOptionArray(): array
     {
         $result = [];
         foreach ($this->getOptions() as $value => $label) {
@@ -31,7 +30,10 @@ class MetadataOrder implements ArrayInterface
         return $result;
     }
 
-    public function getOptions()
+    /**
+     * @return array
+     */
+    public function getOptions(): array
     {
         $orderAttributes = array_keys($this->orderResource->getConnection()->describeTable('quote'));
         $optionsMetadata = [];

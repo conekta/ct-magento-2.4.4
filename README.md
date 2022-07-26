@@ -1,42 +1,9 @@
 ![alt tag](https://conekta.com/static/assets/Home/conekta-logo-blue-full.svg)
 
-Magento 2 Plugin v.4.1.0 (Stable)
+Magento 2.4.4 Plugin v.0.0.1 (Stable)
 ========================
 
-Installation for Magento 2.3
------------
-
-1. First add this repository in your composer config
-```bash
-composer config repositories.conekta git https://github.com/conekta/customer-magento-plugin
-```
-
-2. Add composer dependency
-```bash
-composer require conekta/conekta_payments master
-```
-
-3. Update Magento
-```bash
-php bin/magento setup:upgrade
-```
-
-4. Compile the component
-```bash
-php bin/magento setup:di:compile
-```
-
-5. Enable plugin
-```bash
-php bin/magento module:enable conekta_payments 
-```
-
-6. Update and/or enable cache
-```bash
-bin/magento c:f
-```
-
-Installation for Magento 2.4
+Installation for Magento 2.4.4
 -----------
 
 1. First add this repository in your composer config
