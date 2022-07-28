@@ -1,3 +1,9 @@
+### 5.0.1 - 2022/07/19 18:02
+
+[Full Changelog](https://github.com/conekta/ct-magento-2.4.4/compare/5.0.0..5.0.1)
+* Fix:
+  - Set 200 by default response in webhook by œelvisheredia [#3](https://github.com/conekta/ct-magento-2.4.4/pull/3)
+
 ### 5.0.0 - 2022/07/27 17:00
 
 [Full Changelog](https://github.com/conekta/ct-magento-2.4.4/compare/4.1.0..5.0.0)

@@ -11,6 +11,7 @@ use Magento\Framework\App\{CsrfAwareActionInterface, RequestInterface, ResponseI
 use Magento\Framework\Controller\Result\{JsonFactory, RawFactory};
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Json\Helper\Data;
+use Magento\Framework\Webapi\Response;
 use Magento\Payment\Model\Method\Logger;
 
 class Index extends Action implements CsrfAwareActionInterface
@@ -20,9 +21,6 @@ class Index extends Action implements CsrfAwareActionInterface
     public const EVENT_ORDER_PENDING_PAYMENT = 'order.pending_payment';
     public const EVENT_ORDER_PAID = 'order.paid';
     public const EVENT_ORDER_EXPIRED = 'order.expired';
-
-    public const HTTP_BAD_REQUEST_CODE = 400;
-    public const HTTP_OK_REQUEST_CODE = 200;
 
     public function __construct(
         Context $context,
@@ -54,8 +52,7 @@ class Index extends Action implements CsrfAwareActionInterface
     {
         $this->conektaLogger->info('Controller Index :: execute');
 
-        $body = null;
-        $response = self::HTTP_BAD_REQUEST_CODE;
+        $response = Response::STATUS_CODE_200;
 
         try {
             $resultRaw = $this->resultRawFactory->create();
@@ -63,23 +60,21 @@ class Index extends Action implements CsrfAwareActionInterface
             $body = $this->helper->jsonDecode($this->getRequest()->getContent());
 
             if (! $body || $this->getRequest()->getMethod() !== 'POST') {
-                return $response;
+                return Response::STATUS_CODE_400;
             }
 
             $event = $body['type'];
 
             $this->conektaLogger->info('Controller Index :: execute body json ', ['event' => $event]);
 
-            $response = self::HTTP_OK_REQUEST_CODE;
             switch ($event) {
                 case self::EVENT_WEBHOOK_PING:
-                    $response = self::HTTP_OK_REQUEST_CODE;
                     break;
                 case self::EVENT_ORDER_CREATED:
                 case self::EVENT_ORDER_PENDING_PAYMENT:
                     $order = $this->webhookRepository->findByMetadataOrderId($body);
                     if (! $order->getId()) {
-                        $response = self::HTTP_BAD_REQUEST_CODE;
+                        $response = Response::STATUS_CODE_400;
                     }
                     break;
                 case self::EVENT_ORDER_PAID:
@@ -88,13 +83,10 @@ class Index extends Action implements CsrfAwareActionInterface
                 case self::EVENT_ORDER_EXPIRED:
                     $this->webhookRepository->expireOrder($body);
                     break;
-                default:
-                    //If the event not exist, response Bad Request
-                    $response = self::HTTP_BAD_REQUEST_CODE;
             }
         } catch (Exception $e) {
             $this->conektaLogger->error('Controller Index :: ' . $e->getMessage());
-            $response = self::HTTP_BAD_REQUEST_CODE;
+            $response = Response::STATUS_CODE_400;
         }
 
         return $resultRaw->setHttpResponseCode($response);
