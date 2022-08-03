@@ -5,12 +5,17 @@ namespace Conekta\Payments\Block\Info;
 use Magento\Checkout\Block\Onepage\Success as CompleteCheckout;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Model\Order;
-use Magento\Store\Model\{ScopeInterface, Store};
+use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\Store;
 
+/**
+ * Class Success
+ */
 class Success extends CompleteCheckout
 {
     /**
-     * getInstructions getter
+     * GetInstructions getter
+     *
      * @return Order Object
      */
     public function getInstructions($type): Order
@@ -30,7 +35,8 @@ class Success extends CompleteCheckout
     }
 
     /**
-     * getMethod getter
+     * GetMethod getter
+     *
      * @return string Object
      */
     public function getMethod(): string
@@ -39,7 +45,8 @@ class Success extends CompleteCheckout
     }
 
     /**
-     *  getOfflineInfo getter
+     * GetOfflineInfo getter
+     *
      * @return Order Object
      * @throws LocalizedException
      */
@@ -51,16 +58,20 @@ class Success extends CompleteCheckout
             ->getInfoInstance()
             ->getAdditionalInformation('offline_info');
     }
+
     /**
-     * getOrder getter
+     * GetOrder getter
+     *
      * @return Order Object
      */
     public function getOrder(): Order
     {
         return $this->_checkoutSession->getLastRealOrder();
     }
+
     /**
-     * getAccountOwner getter
+     * GetAccountOwner getter
+     *
      * @return Store Instance
      */
     public function getAccountOwner(): Store

@@ -4,16 +4,25 @@ namespace Conekta\Payments\Gateway\Command;
 
 use Conekta\Payments\Logger\Logger as ConektaLogger;
 use Magento\Framework\Phrase;
-use Magento\Payment\Gateway\Command\{CommandException, ResultInterface};
+use Magento\Payment\Gateway\Command\CommandException;
+use Magento\Payment\Gateway\Command\ResultInterface;
 use Magento\Payment\Gateway\CommandInterface;
-use Magento\Payment\Gateway\Http\{ClientException, ClientInterface, ConverterException, TransferFactoryInterface};
+use Magento\Payment\Gateway\Http\ClientException;
+use Magento\Payment\Gateway\Http\ClientInterface;
+use Magento\Payment\Gateway\Http\ConverterException;
+use Magento\Payment\Gateway\Http\TransferFactoryInterface;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Gateway\Validator\ValidatorInterface;
 
+/**
+ * Class GatewayCommand
+ */
 class GatewayCommand implements CommandInterface
 {
     /**
+     * GatewayCommand construct
+     *
      * @param BuilderInterface $requestBuilder
      * @param TransferFactoryInterface $transferFactory
      * @param ClientInterface $client
@@ -33,6 +42,8 @@ class GatewayCommand implements CommandInterface
     }
 
     /**
+     * GatewayCommand execute
+     *
      * @param array $commandSubject
      * @return ResultInterface|void|null
      * @throws CommandException
@@ -73,6 +84,8 @@ class GatewayCommand implements CommandInterface
     }
 
     /**
+     * GatewayCommand log exceptions
+     *
      * @param Phrase[] $fails
      * @return void
      */

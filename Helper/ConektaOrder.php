@@ -11,7 +11,6 @@ use Conekta\Payments\Helper\Data as ConektaHelper;
 use Conekta\Payments\Logger\Logger as ConektaLogger;
 use Conekta\Payments\Model\Ui\CreditCard\ConfigProvider;
 use Exception;
-use JetBrains\PhpStorm\ArrayShape;
 use Magento\Checkout\Model\Session;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\Session as CustomerSession;
@@ -64,13 +63,13 @@ class ConektaOrder extends Util
         $this->conektaLogger->info('ConektaOrder.generateOrderParams init', []);
 
         Conekta::setApiKey($this->conektaHelper->getPrivateKey());
-        Conekta::setApiVersion("2.0.0");
+        Conekta::setApiVersion('2.0.0');
         $customerRequest = [];
         try {
             $customer = $this->customerSession->getCustomer();
             $customerApi = null;
             $conektaCustomerId = $customer->getConektaCustomerId();
-            
+
             try {
                 $customerApi = $this->conektaCustomer->find($conektaCustomerId);
             } catch (Exception $error) {
@@ -94,7 +93,7 @@ class ConektaOrder extends Util
             $customerRequest['phone'] = $this->removePhoneSpecialCharacter(
                 $billingAddress->getTelephone()
             );
-            
+
             if (strlen($customerRequest['phone']) < 10) {
                 $this->conektaLogger->info('Helper.CreateOrder phone validation error', $customerRequest);
                 throw new ConektaException(__('Télefono no válido. 
@@ -102,7 +101,7 @@ class ConektaOrder extends Util
                     Los caracteres especiales se desestimaran, solo se puede ingresar como 
                     primer carácter especial: +'));
             }
-            
+
             if (empty($conektaCustomerId)) {
                 $conektaAPI = $this->conektaCustomer->create($customerRequest);
                 $conektaCustomerId = $conektaAPI->id;
@@ -111,7 +110,6 @@ class ConektaOrder extends Util
                     $customer->setCustomAttribute('conekta_customer_id', $conektaCustomerId);
                     $this->customerRepository->save($customer);
                 }
-                
             } else {
                 //If cutomer API exists, always update error
                 $customerApi->update($customerRequest);
@@ -131,22 +129,22 @@ class ConektaOrder extends Util
         );
 
         //always needs shipping due to api does not provide info about merchant type (dropshipping, virtual)
-        $needsShippingContact = !$this->getQuote()->getIsVirtual() || true;
+        $needsShippingContact = ! $this->getQuote()->getIsVirtual() || true;
         if ($needsShippingContact) {
             $validOrderWithCheckout['shipping_contact'] = $this->conektaHelper->getShippingContact(
                 $this->getQuote()->getId()
             );
         }
-        
+
         $validOrderWithCheckout['customer_info'] = [
             'customer_id' => $conektaCustomerId
         ];
-        
-        $threeDsEnabled =  $this->conektaHelper->is3DSEnabled();
-        $saveCardEnabled = $this->conektaHelper->isSaveCardEnabled() &&
-            $customerId;
+
+        $threeDsEnabled = $this->conektaHelper->is3DSEnabled();
+        $saveCardEnabled = $this->conektaHelper->isSaveCardEnabled()
+            && $customerId;
         $installments = $this->getMonthlyInstallments();
-        $validOrderWithCheckout['checkout']    = [
+        $validOrderWithCheckout['checkout'] = [
             'allowed_payment_methods'      => $this->getAllowedPaymentMethods(),
             'monthly_installments_enabled' => (bool)$installments['active_installments'],
             'monthly_installments_options' => $installments['monthly_installments'],
@@ -155,9 +153,9 @@ class ConektaOrder extends Util
             'expires_at'                   => $this->conektaHelper->getExpiredAt(),
             'needs_shipping_contact'       => $needsShippingContact
         ];
-        $validOrderWithCheckout['currency']= $this->conektaHelper->getCurrencyCode();
+        $validOrderWithCheckout['currency'] = $this->conektaHelper->getCurrencyCode();
         $validOrderWithCheckout['metadata'] = $this->getMetadataOrder($orderItems);
-        
+
         return $validOrderWithCheckout;
     }
 
@@ -190,7 +188,7 @@ class ConektaOrder extends Util
                         $months[$k] = (int) $months[$k];
                     }
                 }
-                $result['active_installments'] = (int)!empty($months);
+                $result['active_installments'] = (int)! empty($months);
                 $result['monthly_installments'] = $months;
             } else {
                 $isInstallmentsAvilable = (int)false;
@@ -219,8 +217,8 @@ class ConektaOrder extends Util
         }
 
         $total = $this->getQuote()->getSubtotal();
-        if ($this->conektaHelper->isOxxoEnabled() &&
-            $total <= 10000
+        if ($this->conektaHelper->isOxxoEnabled()
+            && $total <= 10000
         ) {
             $methods[] = 'cash';
         }

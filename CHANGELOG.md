@@ -1,8 +1,9 @@
-### 5.0.1 - 2022/07/19 18:02
+### 5.0.1 - 2022/08/03 17:02
 
 [Full Changelog](https://github.com/conekta/ct-magento-2.4.4/compare/5.0.0..5.0.1)
 * Fix:
-  - Set 200 by default response in webhook by œelvisheredia [#3](https://github.com/conekta/ct-magento-2.4.4/pull/3)
+  - Config declarative schema to create or upgrade tables by @ElvisHeredia [#6](https://github.com/conekta/ct-magento-2.4.4/pull/6)
+  - Set 200 by default response in webhook by @ElvisHeredia [#3](https://github.com/conekta/ct-magento-2.4.4/pull/3)
 
 ### 5.0.0 - 2022/07/27 17:00
 

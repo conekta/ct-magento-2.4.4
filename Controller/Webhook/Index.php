@@ -5,15 +5,22 @@ namespace Conekta\Payments\Controller\Webhook;
 use Conekta\Payments\Logger\Logger as ConektaLogger;
 use Conekta\Payments\Model\WebhookRepository;
 use Exception;
-use Magento\Framework\App\Action\{Action, Context};
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
-use Magento\Framework\App\{CsrfAwareActionInterface, RequestInterface, ResponseInterface};
-use Magento\Framework\Controller\Result\{JsonFactory, RawFactory};
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Json\Helper\Data;
 use Magento\Framework\Webapi\Response;
 use Magento\Payment\Model\Method\Logger;
 
+/**
+ * Class Index
+ */
 class Index extends Action implements CsrfAwareActionInterface
 {
     public const EVENT_WEBHOOK_PING = 'webhook_ping';
@@ -22,6 +29,17 @@ class Index extends Action implements CsrfAwareActionInterface
     public const EVENT_ORDER_PAID = 'order.paid';
     public const EVENT_ORDER_EXPIRED = 'order.expired';
 
+    /**
+     * Index Webhook contruct
+     *
+     * @param Context $context
+     * @param JsonFactory $resultJsonFactory
+     * @param RawFactory $resultRawFactory
+     * @param Data $helper
+     * @param Logger $logger
+     * @param ConektaLogger $conektaLogger
+     * @param WebhookRepository $webhookRepository
+     */
     public function __construct(
         Context $context,
         protected JsonFactory $resultJsonFactory,
@@ -34,18 +52,20 @@ class Index extends Action implements CsrfAwareActionInterface
         parent::__construct($context);
     }
 
-    /** * @inheritDoc */
+    /** @inheritDoc */
     public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
     {
         return null;
     }
-    /** * @inheritDoc */
+    /** @inheritDoc */
     public function validateForCsrf(RequestInterface $request): ?bool
     {
         return true;
     }
 
     /**
+     * Index webhook execute
+     *
      * @return int|ResponseInterface|ResultInterface
      */
     public function execute()

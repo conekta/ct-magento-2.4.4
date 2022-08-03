@@ -7,7 +7,9 @@ use Conekta\Payments\Exception\ConektaException;
 use Conekta\Payments\Helper\ConektaOrder;
 use Conekta\Payments\Logger\Logger;
 use Magento\Checkout\Model\Session;
-use Magento\Framework\App\Action\{Action, Context, HttpPostActionInterface};
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\Result\{Json, JsonFactory};
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Result\PageFactory;
@@ -15,7 +17,8 @@ use Magento\Framework\View\Result\PageFactory;
 class CreateOrder extends Action implements HttpPostActionInterface
 {
     /**
-     * CreateOrder constructor.
+     * CreateOrder constructor
+     *
      * @param Context $context
      * @param PageFactory $resultPageFactory
      * @param JsonFactory $resultJsonFactory

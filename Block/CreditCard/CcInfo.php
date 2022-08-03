@@ -10,7 +10,6 @@ use Magento\Payment\Model\Config;
 
 /**
  * Class CcInfo
- * @package Conekta\Payments\Block\CreditCard
  */
 class CcInfo extends Info
 {
@@ -20,6 +19,8 @@ class CcInfo extends Info
     protected $_template = 'Conekta_Payments::info/creditcard.phtml';
 
     /**
+     * CcInfo construct
+     *
      * @param Context $context
      * @param Config $_paymentConfig
      * @param array $data
@@ -33,6 +34,8 @@ class CcInfo extends Info
     }
 
     /**
+     * Get Cc type Name
+     *
      * @return Phrase|mixed
      * @throws LocalizedException
      */
@@ -47,6 +50,8 @@ class CcInfo extends Info
     }
 
     /**
+     * Get CC additional data
+     *
      * @return false|mixed
      * @throws LocalizedException
      */
