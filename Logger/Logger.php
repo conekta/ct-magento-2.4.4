@@ -66,4 +66,14 @@ class Logger
     {
         $this->monolog->debug($message, $array);
     }
+
+    /**
+     * @param \Exception $e
+     * @param array $orderParams
+     * @return void
+     */
+    public function critical(\Exception $e, array $orderParams)
+    {
+        $this->monolog->critical($e->getMessage(), $orderParams);
+    }
 }
