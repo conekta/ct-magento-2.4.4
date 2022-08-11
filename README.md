@@ -54,7 +54,7 @@ php bin/magento module:disable Conekta_Payments --clear-static-content
 
 5. Add composer dependency
 ```bash
-composer require conekta/conekta_payments master
+composer require conekta/conekta_payments 4.1.2
 ```
 
 6. Update Magento
