@@ -7,11 +7,12 @@ use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
  * Interface ConektaQuoteRepositoryInterface
- * @package Conekta\Payments\Api
  */
 interface ConektaQuoteRepositoryInterface
 {
     /**
+     * Get Quote by ID
+     *
      * @param int $id
      * @return ConektaQuoteInterface
      * @throws NoSuchEntityException
@@ -19,6 +20,8 @@ interface ConektaQuoteRepositoryInterface
     public function getById($id): ConektaQuoteInterface;
 
     /**
+     * Save conekta quote
+     *
      * @param ConektaQuoteInterface $conektaQuote
      * @return ConektaQuoteInterface
      */

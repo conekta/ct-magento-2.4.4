@@ -6,11 +6,12 @@ use Conekta\Order;
 
 /**
  * Interface EmbedFormRepositoryInterface
- * @package Conekta\Payments\Api
  */
 interface EmbedFormRepositoryInterface
 {
     /**
+     * Generate form
+     *
      * @param int $quoteId
      * @param array $orderParams
      * @param float $orderTotal

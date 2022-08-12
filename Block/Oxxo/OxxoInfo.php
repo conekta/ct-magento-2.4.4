@@ -7,10 +7,20 @@ use Magento\Framework\View\Element\Template\Context;
 use Magento\Payment\Block\Info;
 use Magento\Payment\Model\Config;
 
+/**
+ * Class OxxoInfo
+ */
 class OxxoInfo extends Info
 {
     protected $_template = 'Conekta_Payments::info/oxxo.phtml';
 
+    /**
+     * Construct OxxoInfo
+     *
+     * @param Context $context
+     * @param Config $_paymentConfig
+     * @param array $data
+     */
     public function __construct(
         Context $context,
         protected Config $_paymentConfig,
@@ -20,6 +30,8 @@ class OxxoInfo extends Info
     }
 
     /**
+     * Get Oxxo Data
+     *
      * @return false|mixed
      * @throws LocalizedException
      */
@@ -34,6 +46,8 @@ class OxxoInfo extends Info
     }
 
     /**
+     * Get Additional Data
+     *
      * @return mixed
      * @throws LocalizedException
      */
