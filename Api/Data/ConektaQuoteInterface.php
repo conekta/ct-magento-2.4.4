@@ -4,7 +4,6 @@ namespace Conekta\Payments\Api\Data;
 
 /**
  * Interface ConektaQuoteInterface
- * @package Conekta\Payments\Api\Data
  */
 interface ConektaQuoteInterface
 {
@@ -13,22 +12,30 @@ interface ConektaQuoteInterface
     public const MINIMUM_AMOUNT_PER_QUOTE = 20;
 
     /**
+     * Get quote ID
+     *
      * @return int
      */
     public function getQuoteId(): int;
 
     /**
+     * Set Quote ID
+     *
      * @param int $value
      * @return void
      */
     public function setQuoteId($value): void;
 
     /**
+     * Get Conekta Order ID
+     *
      * @return string
      */
     public function getConektaOrderId(): string;
 
     /**
+     * Set conekta Order ID
+     *
      * @param string $value
      * @return void
      */

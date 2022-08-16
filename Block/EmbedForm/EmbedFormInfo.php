@@ -3,11 +3,15 @@
 namespace Conekta\Payments\Block\EmbedForm;
 
 use Conekta\Payments\Model\Ui\EmbedForm\ConfigProvider;
+use Magento\Framework\Exception;
+use Magento\Framework\Phrase;
 use Magento\Framework\View\Element\Template\Context;
-use Magento\Framework\{Exception, Phrase};
 use Magento\Payment\Block\Info;
 use Magento\Payment\Model\Config;
 
+/**
+ * Class EmbedFormInfo
+ */
 class EmbedFormInfo extends Info
 {
     /**
@@ -16,19 +20,23 @@ class EmbedFormInfo extends Info
     protected $_template = 'Conekta_Payments::info/embedform.phtml';
 
     /**
+     * EmbedFormInfo construct
+     *
      * @param Context $context
      * @param Config $_paymentConfig
      * @param array $data
      */
     public function __construct(
-        Context          $context,
+        Context $context,
         protected Config $_paymentConfig,
-        array            $data = []
+        array $data = []
     ) {
         parent::__construct($context, $data);
     }
 
     /**
+     * Get cc type name
+     *
      * @return Phrase|mixed
      * @throws Exception\LocalizedException
      */
@@ -43,6 +51,8 @@ class EmbedFormInfo extends Info
     }
 
     /**
+     * Get additional Data
+     *
      * @return mixed
      * @throws Exception\LocalizedException
      */
@@ -52,6 +62,8 @@ class EmbedFormInfo extends Info
     }
 
     /**
+     * Get Offline info
+     *
      * @return false|mixed
      * @throws Exception\LocalizedException
      */
@@ -66,6 +78,8 @@ class EmbedFormInfo extends Info
     }
 
     /**
+     * Get payment method type
+     *
      * @return mixed
      * @throws Exception\LocalizedException
      */
@@ -75,6 +89,8 @@ class EmbedFormInfo extends Info
     }
 
     /**
+     * Get payment method title
+     *
      * @return string
      * @throws Exception\LocalizedException
      */
@@ -99,6 +115,8 @@ class EmbedFormInfo extends Info
     }
 
     /**
+     * Is credit card payment method
+     *
      * @return bool
      * @throws Exception\LocalizedException
      */
@@ -108,6 +126,8 @@ class EmbedFormInfo extends Info
     }
 
     /**
+     * Is oxxo paymen method
+     *
      * @return bool
      * @throws Exception\LocalizedException
      */
@@ -117,6 +137,8 @@ class EmbedFormInfo extends Info
     }
 
     /**
+     * Is spei paymen method
+     *
      * @return bool
      * @throws Exception\LocalizedException
      */

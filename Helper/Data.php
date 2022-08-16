@@ -320,7 +320,9 @@ class Data extends Util
                     $productId = $item->getProductId();
                     $product = $this->productRepository->getById($productId);
                     foreach ($productAttributes as $attr) {
-                        $productValues[$attr] = $this->removeSpecialCharacter($product->getData($attr));
+                        if (!is_null($product->getData($attr))) {
+                            $productValues[$attr] = $this->removeSpecialCharacter($product->getData($attr));
+                        }
                     }
                     $request['Product-' . $productId] = $this->customFormat($productValues);
                 }

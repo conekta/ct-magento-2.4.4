@@ -4,6 +4,9 @@ namespace Conekta\Payments\Exception;
 
 use Magento\Framework\Exception\LocalizedException;
 
+/**
+ * Class ConektaException
+ */
 class ConektaException extends LocalizedException
 {
     public const INVALID_PHONE_MESSAGE = 'Télefono no válido. 
