@@ -11,12 +11,21 @@ use Magento\Tax\Model\ClassModel;
 
 class TaxLinesBuilder implements BuilderInterface
 {
+    private ConektaHelper $conektaHelper;
+    private ConektaLogger $conektaLogger;
+    private ClassModel $taxClass;
+    private Product $product;
+
     public function __construct(
-        private Product $product,
-        private ClassModel $taxClass,
-        private ConektaLogger $conektaLogger,
-        private ConektaHelper $conektaHelper
+        Product $product,
+        ClassModel $taxClass,
+        ConektaLogger $conektaLogger,
+        ConektaHelper $conektaHelper
     ) {
+        $this->product = $product;
+        $this->taxClass = $taxClass;
+        $this->conektaLogger = $conektaLogger;
+        $this->conektaHelper = $conektaHelper;
         $this->conektaLogger->info('Request TaxLinesBuilder :: __construct');
     }
 

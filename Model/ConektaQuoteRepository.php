@@ -9,14 +9,19 @@ use Magento\Framework\Exception\{AlreadyExistsException, NoSuchEntityException};
 
 class ConektaQuoteRepository implements ConektaQuoteRepositoryInterface
 {
+    private ConektaQuoteResource $conektaQuoteResource;
+    private ConektaQuoteFactory $conektaQuoteFactory;
+
     /**
      * @param ConektaQuoteFactory $conektaQuoteFactory
      * @param ConektaQuoteResource $conektaQuoteResource
      */
     public function __construct(
-        private ConektaQuoteFactory $conektaQuoteFactory,
-        private ConektaQuoteResource $conektaQuoteResource
+        ConektaQuoteFactory $conektaQuoteFactory,
+        ConektaQuoteResource $conektaQuoteResource
     ) {
+        $this->conektaQuoteFactory = $conektaQuoteFactory;
+        $this->conektaQuoteResource = $conektaQuoteResource;
     }
 
     /**

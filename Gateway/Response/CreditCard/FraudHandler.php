@@ -10,12 +10,14 @@ use Magento\Sales\Model\Order\Payment;
 class FraudHandler implements HandlerInterface
 {
     public const FRAUD_MSG_LIST = 'FRAUD_MSG_LIST';
+    private ConektaLogger $conektaLogger;
 
     /**
      * @param ConektaLogger $conektaLogger
      */
-    public function __construct(private ConektaLogger $conektaLogger)
+    public function __construct(ConektaLogger $conektaLogger)
     {
+        $this->conektaLogger = $conektaLogger;
         $this->conektaLogger->info('Response FraudHandler :: __construct');
     }
 

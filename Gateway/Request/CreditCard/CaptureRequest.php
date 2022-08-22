@@ -11,6 +11,11 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 
 class CaptureRequest implements CaptureRequestInterface
 {
+    protected ConektaHelper $conektaHelper;
+    private ConektaLogger $conektaLogger;
+    private SubjectReader $subjectReader;
+    private ConfigInterface $config;
+
     /**
      * @param ConfigInterface $config
      * @param SubjectReader $subjectReader
@@ -18,11 +23,15 @@ class CaptureRequest implements CaptureRequestInterface
      * @param ConektaLogger $conektaLogger
      */
     public function __construct(
-        private ConfigInterface $config,
-        private SubjectReader $subjectReader,
-        protected ConektaHelper $conektaHelper,
-        private ConektaLogger $conektaLogger
+        ConfigInterface $config,
+        SubjectReader $subjectReader,
+        ConektaHelper $conektaHelper,
+        ConektaLogger $conektaLogger
     ) {
+        $this->config = $config;
+        $this->subjectReader = $subjectReader;
+        $this->conektaHelper = $conektaHelper;
+        $this->conektaLogger = $conektaLogger;
         $this->conektaLogger->info('Request CaptureRequest :: __construct');
     }
 

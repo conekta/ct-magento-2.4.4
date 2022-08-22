@@ -15,6 +15,15 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 
 class CaptureRequest implements CaptureRequestInterface
 {
+    protected ConektaCustomer $conektaCustomer;
+    protected CustomerRepositoryInterface $customerRepository;
+    protected CustomerSession $customerSession;
+    protected Config $conektaConfig;
+    protected ConektaLogger $conektaLogger;
+    protected ConektaHelper $conektaHelper;
+    protected SubjectReader $subjectReader;
+    protected ConfigInterface $config;
+
     /**
      * CaptureRequest constructor.
      * @param ConfigInterface $config
@@ -27,15 +36,23 @@ class CaptureRequest implements CaptureRequestInterface
      * @param ConektaCustomer $conektaCustomer
      */
     public function __construct(
-        protected ConfigInterface $config,
-        protected SubjectReader $subjectReader,
-        protected ConektaHelper $conektaHelper,
-        protected ConektaLogger $conektaLogger,
-        protected Config $conektaConfig,
-        protected CustomerSession $customerSession,
-        protected CustomerRepositoryInterface $customerRepository,
-        protected ConektaCustomer $conektaCustomer
+        ConfigInterface $config,
+        SubjectReader $subjectReader,
+        ConektaHelper $conektaHelper,
+        ConektaLogger $conektaLogger,
+        Config $conektaConfig,
+        CustomerSession $customerSession,
+        CustomerRepositoryInterface $customerRepository,
+        ConektaCustomer $conektaCustomer
     ) {
+        $this->config = $config;
+        $this->subjectReader = $subjectReader;
+        $this->conektaHelper = $conektaHelper;
+        $this->conektaLogger = $conektaLogger;
+        $this->conektaConfig = $conektaConfig;
+        $this->customerSession = $customerSession;
+        $this->customerRepository = $customerRepository;
+        $this->conektaCustomer = $conektaCustomer;
         $this->conektaLogger->info('EMBED Request CaptureRequest :: __construct');
     }
 

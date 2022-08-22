@@ -7,14 +7,19 @@ use Magento\Payment\Gateway\Http\{TransferBuilder, TransferFactoryInterface, Tra
 
 class TransferFactory implements TransferFactoryInterface
 {
+    private ConektaLogger $conektaLogger;
+    private TransferBuilder $transferBuilder;
+
     /**
      * @param TransferBuilder $transferBuilder
      * @param ConektaLogger $conektaLogger
      */
     public function __construct(
-        private TransferBuilder $transferBuilder,
-        private ConektaLogger $conektaLogger
+        TransferBuilder $transferBuilder,
+        ConektaLogger $conektaLogger
     ) {
+        $this->transferBuilder = $transferBuilder;
+        $this->conektaLogger = $conektaLogger;
         $this->conektaLogger->info('HTTP TransferFactory :: __construct');
     }
 

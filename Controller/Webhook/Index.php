@@ -28,6 +28,12 @@ class Index extends Action implements CsrfAwareActionInterface
     public const EVENT_ORDER_PENDING_PAYMENT = 'order.pending_payment';
     public const EVENT_ORDER_PAID = 'order.paid';
     public const EVENT_ORDER_EXPIRED = 'order.expired';
+    protected Data $helper;
+    protected RawFactory $resultRawFactory;
+    protected JsonFactory $resultJsonFactory;
+    private WebhookRepository $webhookRepository;
+    private ConektaLogger $conektaLogger;
+    private Logger $logger;
 
     /**
      * Index Webhook contruct
@@ -42,13 +48,19 @@ class Index extends Action implements CsrfAwareActionInterface
      */
     public function __construct(
         Context $context,
-        protected JsonFactory $resultJsonFactory,
-        protected RawFactory $resultRawFactory,
-        protected Data $helper,
-        private Logger $logger,
-        private ConektaLogger $conektaLogger,
-        private WebhookRepository $webhookRepository
+        JsonFactory $resultJsonFactory,
+        RawFactory $resultRawFactory,
+        Data $helper,
+        Logger $logger,
+        ConektaLogger $conektaLogger,
+        WebhookRepository $webhookRepository
     ) {
+        $this->resultJsonFactory = $resultJsonFactory;
+        $this->resultRawFactory = $resultRawFactory;
+        $this->helper = $helper;
+        $this->logger = $logger;
+        $this->conektaLogger = $conektaLogger;
+        $this->webhookRepository = $webhookRepository;
         parent::__construct($context);
     }
 

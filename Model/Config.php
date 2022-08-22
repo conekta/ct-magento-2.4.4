@@ -11,6 +11,12 @@ use Magento\Framework\Validator\Exception;
 
 class Config
 {
+    protected Webhook $conektaWebhook;
+    protected Resolver $resolver;
+    protected ConektaHelper $conektaHelper;
+    protected EncryptorInterface $encryptor;
+    private ConektaLogger $conektaLogger;
+
     /**
      * @param EncryptorInterface $encryptor
      * @param ConektaHelper $conektaHelper
@@ -19,12 +25,17 @@ class Config
      * @param Webhook $conektaWebhook
      */
     public function __construct(
-        protected EncryptorInterface $encryptor,
-        protected ConektaHelper $conektaHelper,
-        protected Resolver $resolver,
-        private ConektaLogger $conektaLogger,
-        protected Webhook $conektaWebhook
+        EncryptorInterface $encryptor,
+        ConektaHelper $conektaHelper,
+        Resolver $resolver,
+        ConektaLogger $conektaLogger,
+        Webhook $conektaWebhook
     ) {
+        $this->encryptor = $encryptor;
+        $this->conektaHelper = $conektaHelper;
+        $this->resolver = $resolver;
+        $this->conektaLogger = $conektaLogger;
+        $this->conektaWebhook = $conektaWebhook;
     }
 
     /**

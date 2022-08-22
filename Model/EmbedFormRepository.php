@@ -11,6 +11,12 @@ use Magento\Framework\Exception\NoSuchEntityException;
 
 class EmbedFormRepository implements EmbedFormRepositoryInterface
 {
+    protected ConektaOrderApi $conektaOrderApi;
+    private ConektaQuoteRepositoryFactory $conektaQuoteRepositoryFactory;
+    private ConektaQuoteFactory $conektaQuoteFactory;
+    private ConektaQuoteInterface $conektaQuoteInterface;
+    private ConektaLogger $conektaLogger;
+
     /**
      * @param ConektaLogger $conektaLogger
      * @param ConektaQuoteInterface $conektaQuoteInterface
@@ -19,12 +25,17 @@ class EmbedFormRepository implements EmbedFormRepositoryInterface
      * @param ConektaQuoteRepositoryFactory $conektaQuoteRepositoryFactory
      */
     public function __construct(
-        private ConektaLogger $conektaLogger,
-        private ConektaQuoteInterface $conektaQuoteInterface,
-        protected ConektaOrderApi $conektaOrderApi,
-        private ConektaQuoteFactory $conektaQuoteFactory,
-        private ConektaQuoteRepositoryFactory $conektaQuoteRepositoryFactory
+        ConektaLogger $conektaLogger,
+        ConektaQuoteInterface $conektaQuoteInterface,
+        ConektaOrderApi $conektaOrderApi,
+        ConektaQuoteFactory $conektaQuoteFactory,
+        ConektaQuoteRepositoryFactory $conektaQuoteRepositoryFactory
     ) {
+        $this->conektaLogger = $conektaLogger;
+        $this->conektaQuoteInterface = $conektaQuoteInterface;
+        $this->conektaOrderApi = $conektaOrderApi;
+        $this->conektaQuoteFactory = $conektaQuoteFactory;
+        $this->conektaQuoteRepositoryFactory = $conektaQuoteRepositoryFactory;
     }
 
     /**

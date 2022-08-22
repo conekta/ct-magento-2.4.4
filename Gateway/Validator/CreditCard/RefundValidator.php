@@ -10,6 +10,10 @@ use Magento\Payment\Gateway\Validator\{AbstractValidator, ResultInterface, Resul
 
 class RefundValidator extends AbstractValidator
 {
+    protected ConektaHelper $conektaHelper;
+    private ConektaLogger $conektaLogger;
+    private SubjectReader $subjectReader;
+
     /**
      * RefundValidator constructor.
      *
@@ -20,10 +24,13 @@ class RefundValidator extends AbstractValidator
      */
     public function __construct(
         ResultInterfaceFactory $resultFactory,
-        private SubjectReader $subjectReader,
-        protected ConektaHelper $conektaHelper,
-        private ConektaLogger $conektaLogger
+        SubjectReader $subjectReader,
+        ConektaHelper $conektaHelper,
+        ConektaLogger $conektaLogger
     ) {
+        $this->subjectReader = $subjectReader;
+        $this->conektaHelper = $conektaHelper;
+        $this->conektaLogger = $conektaLogger;
         $this->conektaLogger->info('Credit Card RefundValidator :: __construct');
         parent::__construct($resultFactory);
     }

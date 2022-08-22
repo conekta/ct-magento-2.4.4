@@ -14,6 +14,14 @@ use Magento\Payment\Model\Method\Logger;
 
 class TransactionRefund implements ClientInterface
 {
+    protected HttpUtil $_httpUtil;
+    protected ConektaHelper $_conektaHelper;
+    private Logger $logger;
+    private EncryptorInterface $encryptor;
+    private Context $context;
+    private ConektaOrder $conektaOrder;
+    private ConektaLogger $conektaLogger;
+
     /**
      * @param ConektaHelper $_conektaHelper
      * @param ConektaLogger $conektaLogger
@@ -26,15 +34,22 @@ class TransactionRefund implements ClientInterface
      * @throws Exception
      */
     public function __construct(
-        protected ConektaHelper $_conektaHelper,
-        private ConektaLogger $conektaLogger,
-        private ConektaOrder $conektaOrder,
-        protected HttpUtil $_httpUtil,
-        private Context $context,
-        private EncryptorInterface $encryptor,
-        private Logger $logger,
+        ConektaHelper $_conektaHelper,
+        ConektaLogger $conektaLogger,
+        ConektaOrder $conektaOrder,
+        HttpUtil $_httpUtil,
+        Context $context,
+        EncryptorInterface $encryptor,
+        Logger $logger,
         array $data = []
     ) {
+        $this->_conektaHelper = $_conektaHelper;
+        $this->conektaLogger = $conektaLogger;
+        $this->conektaOrder = $conektaOrder;
+        $this->_httpUtil = $_httpUtil;
+        $this->context = $context;
+        $this->encryptor = $encryptor;
+        $this->logger = $logger;
         $config = [
             'locale' => 'es'
         ];

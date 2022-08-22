@@ -11,6 +11,11 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 
 class LineItemsBuilder implements BuilderInterface
 {
+    protected ConektaLogger $conektaLogger;
+    protected ConektaHelper $conektaHelper;
+    private Escaper $escaper;
+    private Product $product;
+
     /**
      * @param Product $product
      * @param Escaper $escaper
@@ -18,11 +23,15 @@ class LineItemsBuilder implements BuilderInterface
      * @param ConektaLogger $conektaLogger
      */
     public function __construct(
-        private Product $product,
-        private Escaper $escaper,
-        protected ConektaHelper $conektaHelper,
-        protected ConektaLogger $conektaLogger
+        Product $product,
+        Escaper $escaper,
+        ConektaHelper $conektaHelper,
+        ConektaLogger $conektaLogger
     ) {
+        $this->product = $product;
+        $this->escaper = $escaper;
+        $this->conektaHelper = $conektaHelper;
+        $this->conektaLogger = $conektaLogger;
         $this->conektaLogger->info('Request LineItemsBuilder :: __construct');
     }
 

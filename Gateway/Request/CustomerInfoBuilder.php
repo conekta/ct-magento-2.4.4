@@ -9,14 +9,19 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 
 class CustomerInfoBuilder implements BuilderInterface
 {
+    private ConektaLogger $conektaLogger;
+    private Product $product;
+
     /**
      * @param Product $product
      * @param ConektaLogger $conektaLogger
      */
     public function __construct(
-        private Product $product,
-        private ConektaLogger $conektaLogger
+        Product $product,
+        ConektaLogger $conektaLogger
     ) {
+        $this->product = $product;
+        $this->conektaLogger = $conektaLogger;
         $this->conektaLogger->info('Request LineItemsBuilder :: __construct');
     }
 

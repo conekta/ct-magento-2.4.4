@@ -23,6 +23,16 @@ use Magento\Quote\Model\Quote;
 
 class ConektaOrder extends Util
 {
+    protected ConfigProvider $conektaConfigProvider;
+    protected CustomerRepositoryInterface $customerRepository;
+    protected Session $checkoutSession;
+    protected CustomerSession $customerSession;
+    protected ConektaOrderApi $conektaOrderApi;
+    protected ConektaCustomer $conektaCustomer;
+    protected ConektaLogger $conektaLogger;
+    protected Data $conektaHelper;
+    protected Context $context;
+
     /**
      * ConektaOrder constructor.
      * @param Context $context
@@ -36,16 +46,25 @@ class ConektaOrder extends Util
      * @param ConfigProvider $conektaConfigProvider
      */
     public function __construct(
-        protected Context $context,
-        protected ConektaHelper $conektaHelper,
-        protected ConektaLogger $conektaLogger,
-        protected ConektaCustomer $conektaCustomer,
-        protected ConektaOrderApi $conektaOrderApi,
-        protected CustomerSession $customerSession,
-        protected Session $checkoutSession,
-        protected CustomerRepositoryInterface $customerRepository,
-        protected ConfigProvider $conektaConfigProvider
+        Context $context,
+        ConektaHelper $conektaHelper,
+        ConektaLogger $conektaLogger,
+        ConektaCustomer $conektaCustomer,
+        ConektaOrderApi $conektaOrderApi,
+        CustomerSession $customerSession,
+        Session $checkoutSession,
+        CustomerRepositoryInterface $customerRepository,
+        ConfigProvider $conektaConfigProvider
     ) {
+        $this->context = $context;
+        $this->conektaHelper = $conektaHelper;
+        $this->conektaLogger = $conektaLogger;
+        $this->conektaCustomer = $conektaCustomer;
+        $this->conektaOrderApi = $conektaOrderApi;
+        $this->customerSession = $customerSession;
+        $this->checkoutSession = $checkoutSession;
+        $this->customerRepository = $customerRepository;
+        $this->conektaConfigProvider = $conektaConfigProvider;
         parent::__construct($context);
     }
 
@@ -96,9 +115,9 @@ class ConektaOrder extends Util
 
             if (strlen($customerRequest['phone']) < 10) {
                 $this->conektaLogger->info('Helper.CreateOrder phone validation error', $customerRequest);
-                throw new ConektaException(__('Télefono no válido. 
-                    El télefono debe tener al menos 10 carácteres. 
-                    Los caracteres especiales se desestimaran, solo se puede ingresar como 
+                throw new ConektaException(__('Télefono no válido.
+                    El télefono debe tener al menos 10 carácteres.
+                    Los caracteres especiales se desestimaran, solo se puede ingresar como
                     primer carácter especial: +'));
             }
 

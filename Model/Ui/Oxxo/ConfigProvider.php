@@ -12,6 +12,9 @@ use Magento\Quote\Model\Quote;
 class ConfigProvider implements ConfigProviderInterface
 {
     public const CODE = 'conekta_oxxo';
+    protected Session $checkoutSession;
+    protected Repository $assetRepository;
+    protected ConektaHelper $conektaHelper;
 
     /**
      * @param Session $checkoutSession
@@ -19,10 +22,13 @@ class ConfigProvider implements ConfigProviderInterface
      * @param ConektaHelper $conektaHelper
      */
     public function __construct(
-        protected Session $checkoutSession,
-        protected Repository $assetRepository,
-        protected ConektaHelper $conektaHelper
+        Session $checkoutSession,
+        Repository $assetRepository,
+        ConektaHelper $conektaHelper
     ) {
+        $this->conektaHelper = $conektaHelper;
+        $this->assetRepository = $assetRepository;
+        $this->checkoutSession = $checkoutSession;
     }
 
     /**

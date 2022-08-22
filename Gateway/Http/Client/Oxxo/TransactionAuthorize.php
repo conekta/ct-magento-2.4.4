@@ -17,6 +17,9 @@ class TransactionAuthorize implements ClientInterface
 {
     public const SUCCESS = 1;
     public const FAILURE = 0;
+    protected ConektaSalesOrderFactory $conektaSalesOrderFactory;
+    protected HttpUtil $httpUtil;
+    protected ConektaHelper $conektaHelper;
 
     /**
      * @var array
@@ -25,6 +28,9 @@ class TransactionAuthorize implements ClientInterface
         self::SUCCESS,
         self::FAILURE
     ];
+    private ConektaOrder $conektaOrder;
+    private ConektaLogger $conektaLogger;
+    private Logger $logger;
 
     /**
      * @param Logger $logger
@@ -36,13 +42,19 @@ class TransactionAuthorize implements ClientInterface
      * @throws Exception
      */
     public function __construct(
-        private Logger $logger,
-        protected ConektaHelper $conektaHelper,
-        private ConektaLogger $conektaLogger,
-        private ConektaOrder $conektaOrder,
-        protected HttpUtil $httpUtil,
-        protected ConektaSalesOrderFactory $conektaSalesOrderFactory
+        Logger $logger,
+        ConektaHelper $conektaHelper,
+        ConektaLogger $conektaLogger,
+        ConektaOrder $conektaOrder,
+        HttpUtil $httpUtil,
+        ConektaSalesOrderFactory $conektaSalesOrderFactory
     ) {
+        $this->logger = $logger;
+        $this->conektaHelper = $conektaHelper;
+        $this->conektaLogger = $conektaLogger;
+        $this->conektaOrder = $conektaOrder;
+        $this->httpUtil = $httpUtil;
+        $this->conektaSalesOrderFactory = $conektaSalesOrderFactory;
         $config = [
             'locale' => 'es'
         ];

@@ -20,6 +20,13 @@ use Magento\Payment\Gateway\Validator\ValidatorInterface;
  */
 class GatewayCommand implements CommandInterface
 {
+    private ?ValidatorInterface $validator = null;
+    private ?HandlerInterface $handler = null;
+    private ConektaLogger $conektaLogger;
+    private ClientInterface $client;
+    private TransferFactoryInterface $transferFactory;
+    private BuilderInterface $requestBuilder;
+
     /**
      * GatewayCommand construct
      *
@@ -31,13 +38,19 @@ class GatewayCommand implements CommandInterface
      * @param ValidatorInterface|null $validator
      */
     public function __construct(
-        private BuilderInterface         $requestBuilder,
-        private TransferFactoryInterface $transferFactory,
-        private ClientInterface          $client,
-        private ConektaLogger            $conektaLogger,
-        private ?HandlerInterface        $handler = null,
-        private ?ValidatorInterface      $validator = null
+        BuilderInterface         $requestBuilder,
+        TransferFactoryInterface $transferFactory,
+        ClientInterface          $client,
+        ConektaLogger            $conektaLogger,
+        ?HandlerInterface        $handler = null,
+        ?ValidatorInterface      $validator = null
     ) {
+        $this->requestBuilder = $requestBuilder;
+        $this->transferFactory = $transferFactory;
+        $this->client = $client;
+        $this->conektaLogger = $conektaLogger;
+        $this->handler = $handler;
+        $this->validator = $validator;
         $this->conektaLogger->info('Command GatewayCommand :: __construct');
     }
 
@@ -77,10 +90,12 @@ class GatewayCommand implements CommandInterface
             }
         }
 
-        $this->handler?->handle(
-            $commandSubject,
-            $response
-        );
+        if ($this->handler) {
+            $this->handler->handle(
+                $commandSubject,
+                $response
+            );
+        }
     }
 
     /**

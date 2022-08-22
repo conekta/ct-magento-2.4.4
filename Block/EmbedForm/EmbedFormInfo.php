@@ -18,6 +18,7 @@ class EmbedFormInfo extends Info
      * @var string
      */
     protected $_template = 'Conekta_Payments::info/embedform.phtml';
+    protected Config $_paymentConfig;
 
     /**
      * EmbedFormInfo construct
@@ -28,9 +29,10 @@ class EmbedFormInfo extends Info
      */
     public function __construct(
         Context $context,
-        protected Config $_paymentConfig,
+        Config $_paymentConfig,
         array $data = []
     ) {
+        $this->_paymentConfig = $_paymentConfig;
         parent::__construct($context, $data);
     }
 

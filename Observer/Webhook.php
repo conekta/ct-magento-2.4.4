@@ -12,14 +12,19 @@ use Magento\Framework\Validator\Exception;
  */
 class Webhook implements ObserverInterface
 {
+    protected ManagerInterface $messageManager;
+    protected Config $config;
+
     /**
      * @param Config $config
      * @param ManagerInterface $messageManager
      */
     public function __construct(
-        protected Config $config,
-        protected ManagerInterface $messageManager
+        Config $config,
+        ManagerInterface $messageManager
     ) {
+        $this->config = $config;
+        $this->messageManager = $messageManager;
     }
 
     /**

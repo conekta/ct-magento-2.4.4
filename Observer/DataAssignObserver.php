@@ -41,13 +41,15 @@ class DataAssignObserver extends AbstractDataAssignObserver
         self::TXN_ID,
         self::REFERENCE,
     ];
+    protected Session $checkoutSession;
 
     /**
      * @param Session $checkoutSession
      */
     public function __construct(
-        protected Session $checkoutSession
+        Session $checkoutSession
     ) {
+        $this->checkoutSession = $checkoutSession;
     }
 
     /**

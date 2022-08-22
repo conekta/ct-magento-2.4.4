@@ -11,6 +11,11 @@ use Magento\Quote\Api\CartRepositoryInterface;
 
 class DiscountLinesBuilder implements BuilderInterface
 {
+    protected CartRepositoryInterface $cartRepository;
+    private ConektaHelper $conektaHelper;
+    private SubjectReader $subjectReader;
+    private ConektaLogger $conektaLogger;
+
     /**
      * @param ConektaLogger $conektaLogger
      * @param SubjectReader $subjectReader
@@ -18,11 +23,15 @@ class DiscountLinesBuilder implements BuilderInterface
      * @param ConektaHelper $conektaHelper
      */
     public function __construct(
-        private ConektaLogger             $conektaLogger,
-        private SubjectReader             $subjectReader,
-        protected CartRepositoryInterface $cartRepository,
-        private ConektaHelper             $conektaHelper
+        ConektaLogger             $conektaLogger,
+        SubjectReader             $subjectReader,
+        CartRepositoryInterface $cartRepository,
+        ConektaHelper             $conektaHelper
     ) {
+        $this->conektaLogger = $conektaLogger;
+        $this->subjectReader = $subjectReader;
+        $this->cartRepository = $cartRepository;
+        $this->conektaHelper = $conektaHelper;
         $this->conektaLogger->info('Request DiscountLinesBuilder :: __construct');
     }
 

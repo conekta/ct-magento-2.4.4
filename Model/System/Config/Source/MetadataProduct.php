@@ -8,14 +8,19 @@ use Magento\Framework\Option\ArrayInterface;
 
 class MetadataProduct implements ArrayInterface
 {
+    protected AttributeRepositoryInterface $attributeRepository;
+    protected SearchCriteriaBuilder $searchCriteriaBuilder;
+
     /**
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param AttributeRepositoryInterface $attributeRepository
      */
     public function __construct(
-        protected SearchCriteriaBuilder $searchCriteriaBuilder,
-        protected AttributeRepositoryInterface $attributeRepository
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        AttributeRepositoryInterface $attributeRepository
     ) {
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->attributeRepository = $attributeRepository;
     }
 
     /**

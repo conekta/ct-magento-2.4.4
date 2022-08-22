@@ -9,15 +9,19 @@ use Magento\Framework\View\Asset\Repository as AssetRepository;
 class ConfigProvider implements ConfigProviderInterface
 {
     public const CODE = 'conekta_global';
+    protected ConektaHelper $conektaHelper;
+    private AssetRepository $assetRepository;
 
     /**
      * @param ConektaHelper $conektaHelper
      * @param AssetRepository $assetRepository
      */
     public function __construct(
-        protected ConektaHelper $conektaHelper,
-        private AssetRepository $assetRepository
+        ConektaHelper $conektaHelper,
+        AssetRepository $assetRepository
     ) {
+        $this->conektaHelper = $conektaHelper;
+        $this->assetRepository = $assetRepository;
     }
 
     /**

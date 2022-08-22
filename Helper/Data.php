@@ -18,6 +18,19 @@ use Magento\Store\Model\{ScopeInterface, StoreManagerInterface};
 
 class Data extends Util
 {
+    protected CartRepositoryInterface $cartRepository;
+    protected Customer $conektaCustomer;
+    protected ConektaLogger $conektaLogger;
+    protected ProductMetadataInterface $productMetadata;
+    protected EncryptorInterface $encryptor;
+    protected ModuleListInterface $moduleList;
+    protected Context $context;
+    private StoreManagerInterface $storeManager;
+    private Escaper $escaper;
+    private ProductRepository $productRepository;
+    private CustomerSession $customerSession;
+    private CheckoutSession $checkoutSession;
+
     /**
      * Data constructor.
      * @param Context $context
@@ -34,19 +47,31 @@ class Data extends Util
      * @param StoreManagerInterface $storeManager
      */
     public function __construct(
-        protected Context $context,
-        protected ModuleListInterface $moduleList,
-        protected EncryptorInterface $encryptor,
-        protected ProductMetadataInterface $productMetadata,
-        protected ConektaLogger $conektaLogger,
-        protected Customer $conektaCustomer,
-        private CheckoutSession $checkoutSession,
-        private CustomerSession $customerSession,
-        private ProductRepository $productRepository,
-        private Escaper $escaper,
-        protected CartRepositoryInterface $cartRepository,
-        private StoreManagerInterface $storeManager
+        Context $context,
+        ModuleListInterface $moduleList,
+        EncryptorInterface $encryptor,
+        ProductMetadataInterface $productMetadata,
+        ConektaLogger $conektaLogger,
+        Customer $conektaCustomer,
+        CheckoutSession $checkoutSession,
+        CustomerSession $customerSession,
+        ProductRepository $productRepository,
+        Escaper $escaper,
+        CartRepositoryInterface $cartRepository,
+        StoreManagerInterface $storeManager
     ) {
+        $this->context = $context;
+        $this->moduleList = $moduleList;
+        $this->encryptor = $encryptor;
+        $this->productMetadata = $productMetadata;
+        $this->conektaLogger = $conektaLogger;
+        $this->conektaCustomer = $conektaCustomer;
+        $this->checkoutSession = $checkoutSession;
+        $this->customerSession = $customerSession;
+        $this->productRepository = $productRepository;
+        $this->escaper = $escaper;
+        $this->cartRepository = $cartRepository;
+        $this->storeManager = $storeManager;
         parent::__construct($context);
     }
 

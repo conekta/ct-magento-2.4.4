@@ -13,6 +13,7 @@ use Magento\Payment\Model\Config;
 class SpeiInfo extends Info
 {
     protected $_template = 'Conekta_Payments::info/spei.phtml';
+    protected Config $_paymentConfig;
 
     /**
      * Construct SpeiInfo
@@ -23,9 +24,10 @@ class SpeiInfo extends Info
      */
     public function __construct(
         Context $context,
-        protected Config $_paymentConfig,
+        Config $_paymentConfig,
         array $data = []
     ) {
+        $this->_paymentConfig = $_paymentConfig;
         parent::__construct($context, $data);
     }
 

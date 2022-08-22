@@ -7,12 +7,15 @@ use Magento\Sales\Model\ResourceModel\Order;
 
 class MetadataOrder implements ArrayInterface
 {
+    protected Order $orderResource;
+
     /**
      * @param Order $orderResource
      */
     public function __construct(
-        protected Order $orderResource
+        Order $orderResource
     ) {
+        $this->orderResource = $orderResource;
     }
 
     /**

@@ -11,6 +11,8 @@ class TxnIdHandler implements HandlerInterface
 {
     public const TXN_ID = 'TXN_ID';
     public const ORD_ID = 'ORD_ID';
+    private SubjectReader $subjectReader;
+    private ConektaLogger $conektaLogger;
 
     /**
      * TxnIdHandler constructor.
@@ -19,9 +21,11 @@ class TxnIdHandler implements HandlerInterface
      * @param SubjectReader $subjectReader
      */
     public function __construct(
-        private ConektaLogger $conektaLogger,
-        private SubjectReader $subjectReader
+        ConektaLogger $conektaLogger,
+        SubjectReader $subjectReader
     ) {
+        $this->conektaLogger = $conektaLogger;
+        $this->subjectReader = $subjectReader;
         $this->conektaLogger->info('Response TxnIdHandler :: __construct');
     }
 

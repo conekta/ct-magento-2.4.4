@@ -7,12 +7,15 @@ use Magento\Payment\Gateway\Config\ValueHandlerInterface;
 
 class ActiveValueHandler implements ValueHandlerInterface
 {
+    protected ConektaHelper $_conektaHelper;
+
     /**
      * @param ConektaHelper $_conektaHelper
      */
     public function __construct(
-        protected ConektaHelper $_conektaHelper
+        ConektaHelper $_conektaHelper
     ) {
+        $this->_conektaHelper = $_conektaHelper;
     }
 
     /**

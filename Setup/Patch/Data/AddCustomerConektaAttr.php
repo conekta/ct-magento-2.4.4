@@ -11,15 +11,20 @@ use Magento\Framework\Setup\Patch\{DataPatchInterface, PatchInterface};
 
 class AddCustomerConektaAttr implements DataPatchInterface
 {
+    protected CustomerSetupFactory $customerSetupFactory;
+    protected ModuleDataSetupInterface $moduleDataSetup;
+
     /**
      * AddCustomerErpCustomerIdAttribute constructor.
      * @param ModuleDataSetupInterface $moduleDataSetup
      * @param CustomerSetupFactory $customerSetupFactory
      */
     public function __construct(
-        protected ModuleDataSetupInterface $moduleDataSetup,
-        protected CustomerSetupFactory $customerSetupFactory
+        ModuleDataSetupInterface $moduleDataSetup,
+        CustomerSetupFactory $customerSetupFactory
     ) {
+        $this->moduleDataSetup = $moduleDataSetup;
+        $this->customerSetupFactory = $customerSetupFactory;
     }
 
     /**

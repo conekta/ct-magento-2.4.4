@@ -10,16 +10,23 @@ use Magento\Sales\Api\Data\TransactionInterface;
 
 class RefundHandler implements HandlerInterface
 {
+    protected ConektaHelper $conektaHelper;
+    private ConektaLogger $conektaLogger;
+    private SubjectReader $subjectReader;
+
     /**
      * @param SubjectReader $subjectReader
      * @param ConektaHelper $conektaHelper
      * @param ConektaLogger $conektaLogger
      */
     public function __construct(
-        private SubjectReader $subjectReader,
-        protected ConektaHelper $conektaHelper,
-        private ConektaLogger $conektaLogger
+        SubjectReader $subjectReader,
+        ConektaHelper $conektaHelper,
+        ConektaLogger $conektaLogger
     ) {
+        $this->subjectReader = $subjectReader;
+        $this->conektaHelper = $conektaHelper;
+        $this->conektaLogger = $conektaLogger;
         $this->conektaLogger->info('Response RefundHandler :: __construct');
     }
 

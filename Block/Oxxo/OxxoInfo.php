@@ -13,6 +13,7 @@ use Magento\Payment\Model\Config;
 class OxxoInfo extends Info
 {
     protected $_template = 'Conekta_Payments::info/oxxo.phtml';
+    protected Config $_paymentConfig;
 
     /**
      * Construct OxxoInfo
@@ -23,9 +24,10 @@ class OxxoInfo extends Info
      */
     public function __construct(
         Context $context,
-        protected Config $_paymentConfig,
+        Config $_paymentConfig,
         array $data = []
     ) {
+        $this->_paymentConfig = $_paymentConfig;
         parent::__construct($context, $data);
     }
 

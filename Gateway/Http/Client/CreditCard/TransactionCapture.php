@@ -17,6 +17,9 @@ class TransactionCapture implements ClientInterface
 {
     public const SUCCESS = 1;
     public const FAILURE = 0;
+    protected ConektaSalesOrderFactory $conektaSalesOrderFactory;
+    protected HttpUtil $_httpUtil;
+    protected ConektaHelper $_conektaHelper;
 
     /**
      * @var array
@@ -25,6 +28,9 @@ class TransactionCapture implements ClientInterface
         self::SUCCESS,
         self::FAILURE
     ];
+    private ConektaOrder $conektaOrder;
+    private ConektaLogger $conektaLogger;
+    private Logger $logger;
 
     /**
      * @param Logger $logger
@@ -36,13 +42,19 @@ class TransactionCapture implements ClientInterface
      * @throws Exception
      */
     public function __construct(
-        private Logger $logger,
-        protected ConektaHelper $_conektaHelper,
-        private ConektaLogger $conektaLogger,
-        private ConektaOrder $conektaOrder,
-        protected HttpUtil $_httpUtil,
-        protected ConektaSalesOrderFactory $conektaSalesOrderFactory
+        Logger $logger,
+        ConektaHelper $_conektaHelper,
+        ConektaLogger $conektaLogger,
+        ConektaOrder $conektaOrder,
+        HttpUtil $_httpUtil,
+        ConektaSalesOrderFactory $conektaSalesOrderFactory
     ) {
+        $this->logger = $logger;
+        $this->_conektaHelper = $_conektaHelper;
+        $this->conektaLogger = $conektaLogger;
+        $this->conektaOrder = $conektaOrder;
+        $this->_httpUtil = $_httpUtil;
+        $this->conektaSalesOrderFactory = $conektaSalesOrderFactory;
         $config = [
             'locale' => 'es'
         ];

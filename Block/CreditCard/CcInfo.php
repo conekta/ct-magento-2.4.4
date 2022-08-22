@@ -17,6 +17,7 @@ class CcInfo extends Info
      * @var string
      */
     protected $_template = 'Conekta_Payments::info/creditcard.phtml';
+    protected Config $_paymentConfig;
 
     /**
      * CcInfo construct
@@ -27,9 +28,10 @@ class CcInfo extends Info
      */
     public function __construct(
         Context $context,
-        protected Config $_paymentConfig,
+        Config $_paymentConfig,
         array $data = []
     ) {
+        $this->_paymentConfig = $_paymentConfig;
         parent::__construct($context, $data);
     }
 

@@ -8,12 +8,15 @@ use Magento\Framework\Validator\Exception;
 
 class HttpUtil
 {
+    protected ConektaHelper $conektaHelper;
+
     /**
      * @param ConektaHelper $conektaHelper
      */
     public function __construct(
-        protected ConektaHelper $conektaHelper
+        ConektaHelper $conektaHelper
     ) {
+        $this->conektaHelper = $conektaHelper;
     }
 
     /**

@@ -10,11 +10,18 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 
 class ShippingContactBuilder implements BuilderInterface
 {
+    private ConektaHelper $conektaHelper;
+    private ConektaLogger $conektaLogger;
+    private SubjectReader $subjectReader;
+
     public function __construct(
-        private SubjectReader $subjectReader,
-        private ConektaLogger $conektaLogger,
-        private ConektaHelper $conektaHelper
+        SubjectReader $subjectReader,
+        ConektaLogger $conektaLogger,
+        ConektaHelper $conektaHelper
     ) {
+        $this->subjectReader = $subjectReader;
+        $this->conektaLogger = $conektaLogger;
+        $this->conektaHelper = $conektaHelper;
         $this->conektaLogger->info('Request ShippingContactBuilder :: __construct');
     }
 

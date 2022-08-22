@@ -11,6 +11,11 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 
 class MetadataBuilder implements BuilderInterface
 {
+    protected ConektaHelper $conektaHelper;
+    protected Escaper $_escaper;
+    private SubjectReader $subjectReader;
+    private ConektaLogger $conektaLogger;
+
     /**
      * @param Escaper $_escaper
      * @param ConektaHelper $conektaHelper
@@ -18,11 +23,15 @@ class MetadataBuilder implements BuilderInterface
      * @param SubjectReader $subjectReader
      */
     public function __construct(
-        protected Escaper $_escaper,
-        protected ConektaHelper $conektaHelper,
-        private ConektaLogger $conektaLogger,
-        private SubjectReader $subjectReader
+        Escaper $_escaper,
+        ConektaHelper $conektaHelper,
+        ConektaLogger $conektaLogger,
+        SubjectReader $subjectReader
     ) {
+        $this->_escaper = $_escaper;
+        $this->conektaHelper = $conektaHelper;
+        $this->conektaLogger = $conektaLogger;
+        $this->subjectReader = $subjectReader;
         $this->conektaLogger->info('Request MetadataBuilder :: __construct');
     }
 

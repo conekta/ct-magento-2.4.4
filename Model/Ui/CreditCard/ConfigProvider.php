@@ -13,6 +13,10 @@ use Magento\Quote\Model\Quote;
 class ConfigProvider implements ConfigProviderInterface
 {
     public const CODE = 'conekta_cc';
+    protected Session $checkoutSession;
+    protected ConektaHelper $conektaHelper;
+    protected CcConfig $ccCongig;
+    protected Repository $assetRepository;
 
     /**
      * @param Repository $assetRepository
@@ -21,11 +25,15 @@ class ConfigProvider implements ConfigProviderInterface
      * @param Session $checkoutSession
      */
     public function __construct(
-        protected Repository $assetRepository,
-        protected CcConfig $ccCongig,
-        protected ConektaHelper $conektaHelper,
-        protected Session $checkoutSession
+        Repository $assetRepository,
+        CcConfig $ccCongig,
+        ConektaHelper $conektaHelper,
+        Session $checkoutSession
     ) {
+        $this->assetRepository = $assetRepository;
+        $this->ccCongig = $ccCongig;
+        $this->conektaHelper = $conektaHelper;
+        $this->checkoutSession = $checkoutSession;
     }
 
     /**
@@ -182,7 +190,7 @@ class ConfigProvider implements ConfigProviderInterface
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */
-    public function getQuote(): CartInterface|Quote
+    public function getQuote()
     {
         return $this->checkoutSession->getQuote();
     }

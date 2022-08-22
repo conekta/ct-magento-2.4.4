@@ -16,6 +16,13 @@ use Magento\Framework\View\Result\PageFactory;
 
 class CreateOrder extends Action implements HttpPostActionInterface
 {
+    protected Logger $logger;
+    protected ConektaOrder $conektaOrderHelper;
+    protected JsonFactory $resultJsonFactory;
+    protected PageFactory $resultPageFactory;
+    private Session $checkoutSession;
+    private EmbedFormRepositoryInterface $embedFormRepository;
+
     /**
      * CreateOrder constructor
      *
@@ -29,13 +36,19 @@ class CreateOrder extends Action implements HttpPostActionInterface
      */
     public function __construct(
         Context                $context,
-        protected PageFactory  $resultPageFactory,
-        protected JsonFactory  $resultJsonFactory,
-        protected ConektaOrder $conektaOrderHelper,
-        protected Logger       $logger,
-        private                EmbedFormRepositoryInterface $embedFormRepository,
-        private Session        $checkoutSession
+        PageFactory  $resultPageFactory,
+        JsonFactory  $resultJsonFactory,
+        ConektaOrder $conektaOrderHelper,
+        Logger       $logger,
+        EmbedFormRepositoryInterface $embedFormRepository,
+        Session        $checkoutSession
     ) {
+        $this->resultPageFactory = $resultPageFactory;
+        $this->resultJsonFactory = $resultJsonFactory;
+        $this->conektaOrderHelper = $conektaOrderHelper;
+        $this->logger = $logger;
+        $this->embedFormRepository = $embedFormRepository;
+        $this->checkoutSession = $checkoutSession;
         parent::__construct($context);
     }
 

@@ -13,6 +13,13 @@ use Magento\Sales\Model\Service\InvoiceService;
 
 class WebhookRepository
 {
+    protected Transaction $transaction;
+    protected InvoiceSender $invoiceSender;
+    protected InvoiceService $invoiceService;
+    protected OrderInterface $orderInterface;
+    private ConektaSalesOrderInterface $conektaOrderSalesInterface;
+    private ConektaLogger $conektaLogger;
+
     /**
      * @param OrderInterface $orderInterface
      * @param InvoiceService $invoiceService
@@ -22,13 +29,19 @@ class WebhookRepository
      * @param ConektaSalesOrderInterface $conektaOrderSalesInterface
      */
     public function __construct(
-        protected OrderInterface $orderInterface,
-        protected InvoiceService $invoiceService,
-        protected InvoiceSender $invoiceSender,
-        protected Transaction $transaction,
-        private ConektaLogger $conektaLogger,
-        private ConektaSalesOrderInterface $conektaOrderSalesInterface
+        OrderInterface $orderInterface,
+        InvoiceService $invoiceService,
+        InvoiceSender $invoiceSender,
+        Transaction $transaction,
+        ConektaLogger $conektaLogger,
+        ConektaSalesOrderInterface $conektaOrderSalesInterface
     ) {
+        $this->orderInterface = $orderInterface;
+        $this->invoiceService = $invoiceService;
+        $this->invoiceSender = $invoiceSender;
+        $this->transaction = $transaction;
+        $this->conektaLogger = $conektaLogger;
+        $this->conektaOrderSalesInterface = $conektaOrderSalesInterface;
     }
 
     /**

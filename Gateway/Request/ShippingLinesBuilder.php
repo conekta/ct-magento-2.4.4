@@ -10,16 +10,23 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 
 class ShippingLinesBuilder implements BuilderInterface
 {
+    private ConektaHelper $conektaHelper;
+    private ConektaLogger $conektaLogger;
+    private SubjectReader $subjectReader;
+
     /**
      * @param SubjectReader $subjectReader
      * @param ConektaLogger $conektaLogger
      * @param ConektaHelper $conektaHelper
      */
     public function __construct(
-        private SubjectReader $subjectReader,
-        private ConektaLogger $conektaLogger,
-        private ConektaHelper $conektaHelper
+        SubjectReader $subjectReader,
+        ConektaLogger $conektaLogger,
+        ConektaHelper $conektaHelper
     ) {
+        $this->subjectReader = $subjectReader;
+        $this->conektaLogger = $conektaLogger;
+        $this->conektaHelper = $conektaHelper;
         $this->conektaLogger->info('Request ShippingLinesBuilder :: __construct');
     }
 

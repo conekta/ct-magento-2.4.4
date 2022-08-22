@@ -23,6 +23,10 @@ class ConfigProvider implements ConfigProviderInterface
     public const PAYMENT_METHOD_CREDIT_CARD = 'credit';
     public const PAYMENT_METHOD_OXXO = 'oxxo';
     public const PAYMENT_METHOD_SPEI = 'spei';
+    protected ConektaHelper $conektaHelper;
+    protected Session $checkoutSession;
+    protected ConektaLogger $conektaLogger;
+    protected UrlInterface $url;
 
     /**
      * ConfigProvider constructor.
@@ -32,11 +36,15 @@ class ConfigProvider implements ConfigProviderInterface
      * @param UrlInterface $url
      */
     public function __construct(
-        protected ConektaHelper $conektaHelper,
-        protected Session $checkoutSession,
-        protected ConektaLogger $conektaLogger,
-        protected UrlInterface $url
+        ConektaHelper $conektaHelper,
+        Session $checkoutSession,
+        ConektaLogger $conektaLogger,
+        UrlInterface $url
     ) {
+        $this->url = $url;
+        $this->conektaLogger = $conektaLogger;
+        $this->checkoutSession = $checkoutSession;
+        $this->conektaHelper = $conektaHelper;
     }
 
     /**

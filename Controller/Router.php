@@ -15,6 +15,11 @@ use Magento\Framework\Url;
  */
 class Router implements RouterInterface
 {
+    protected ResponseInterface $_response;
+    protected ActionFactory $actionFactory;
+    private ConektaLogger $conektaLogger;
+    private ConektaHelper $conektaHelper;
+
     /**
      * Router construct
      *
@@ -24,11 +29,15 @@ class Router implements RouterInterface
      * @param ConektaLogger $conektaLogger
      */
     public function __construct(
-        protected ActionFactory $actionFactory,
-        protected ResponseInterface $_response,
-        private ConektaHelper $conektaHelper,
-        private ConektaLogger $conektaLogger
+        ActionFactory $actionFactory,
+        ResponseInterface $_response,
+        ConektaHelper $conektaHelper,
+        ConektaLogger $conektaLogger
     ) {
+        $this->actionFactory = $actionFactory;
+        $this->_response = $_response;
+        $this->conektaHelper = $conektaHelper;
+        $this->conektaLogger = $conektaLogger;
     }
 
     /**
