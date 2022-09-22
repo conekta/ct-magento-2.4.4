@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
-    <table name="conekta_salesorder" resorce="default" engine="innodb" comment="Conekta payments orders">
+    <table name="conekta_salesorder" resou:qrce="default" engine="innodb" comment="Conekta payments orders">
         <column xsi:type="int" name="id" nullable="false" unsigned="true" identity="true"
                 comment="Conekta Sales Orders ID"/>
         <column xsi:type="varchar" name="conekta_order_id" nullable="false" length="255" comment="Conekta Order"/>
@@ -19,7 +19,7 @@
             <column name="increment_order_id"/>
         </constraint>
     </table>
-    <table name="conekta_quote" resorce="default" engine="innodb" comment="Map Table Conekta Orders and Quotes">
+    <table name="conekta_quote" resource="default" engine="innodb" comment="Map Table Conekta Orders and Quotes">
         <column xsi:type="int" name="quote_id" nullable="false" unsigned="true" identity="true"
                 comment="Conekta Quote ID"/>
         <column xsi:type="varchar" name="conekta_order_id" nullable="false" length="255" comment="Conekta Order"/>

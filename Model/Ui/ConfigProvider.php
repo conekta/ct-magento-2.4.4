@@ -31,7 +31,7 @@ class ConfigProvider implements ConfigProviderInterface
             'payment' => [
                 self::CODE => [
                     'publicKey'    => $this->conektaHelper->getPublicKey(),
-                    'conekta_logo' => $this->assetRepository->getUrl('Conekta_Payments::images/conekta.svg')
+                    'conekta_logo' => $this->assetRepository->getUrl('Conekta_Payments::images/conekta.png')
                 ]
             ]
         ];
