@@ -1,3 +1,9 @@
+### 5.0.4 - 2022/09/29 15:58
+
+[Full Changelog](https://github.com/conekta/ct-magento-2.4.4/compare/5.0.1..5.0.4)
+* Fix:
+  - Update conekta logo by @ElvisHeredia [#11](https://github.com/conekta/ct-magento-2.4.4/pull/11)
+
 ### 5.0.1 - 2022/08/03 17:02
 
 [Full Changelog](https://github.com/conekta/ct-magento-2.4.4/compare/5.0.0..5.0.1)
